@@ -1,0 +1,135 @@
+"0","# univariate cnn example"
+"0","import numpy as np"
+"0","import pandas as pd"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+  File ""[90m]8;line = 122;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 122, in _find_and_load_hook
+    return _run_hook(name, _hook)
+  File ""[90m]8;line = 96;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 96, in _run_hook
+    module = hook()
+  File ""[90m]8;line = 120;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 120, in _hook
+    return _find_and_load(name, import_)
+ModuleNotFoundError: No module named 'pandas'
+"
+"0","import tensorflow as tf"
+"2","2"
+"2","024-11-29 04:57:10.755306: W tensorflow/stream_executor/platform/de"
+"2","fault/dso_loader.cc:64] Could not load dynamic library 'cudart64_110.dll'; dlerror: cudart64_110.dll not found
+2024-11-29 04:57:10.756212: I tens"
+"2","orflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+"
+"0","from tensorflow.keras.layers import Dense, LSTM"
+"0","from tensorflow.keras.models import Sequential"
+"0","from sklearn.preprocessing import MinMaxScaler"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+  File ""[90m]8;line = 122;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 122, in _find_and_load_hook
+    return _run_hook(name, _hook)
+  File ""[90m]8;line = 96;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 96, in _run_hook
+    module = hook()
+  File ""[90m]8;line = 120;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 120, in _hook
+    return _find_and_load(name, import_)
+  File ""[90m]8;line = 122;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 122, in _find_and_load_hook
+    return _run_hook(name, _hook)
+  File ""[90m]8;line = 96;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 96, in _run_hook
+    module = hook()
+  File ""[90m]8;line = 120;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 120, in _hook
+    return _find_and_load(name, import_)
+ModuleNotFoundError: No module named 'sklearn'
+"
+"0","pd.options.mode.chained_assignment = None"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'pd' is not defined
+"
+"0","tf.random.set_seed(0)"
+"0",""
+"0",""
+"0",""
+"0","from google.colab import drive"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+  File ""[90m]8;line = 122;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 122, in _find_and_load_hook
+    return _run_hook(name, _hook)
+  File ""[90m]8;line = 96;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 96, in _run_hook
+    module = hook()
+  File ""[90m]8;line = 120;file://C:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.pyC:\Users\chaca\AppData\Local\R\cache\R\renv\cache\v5\windows\R-4.4\x86_64-w64-mingw32\reticulate\1.40.0\04740f615607c4e6099356ff6d6694ee\reticulate\python\rpytools\loader.py]8;;[39m"", line 120, in _hook
+    return _find_and_load(name, import_)
+ModuleNotFoundError: No module named 'google.colab'
+"
+"0","drive.mount('/content/drive')"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'drive' is not defined
+"
+"0","# Leer set de datos"
+"0","ruta = '/content/drive/My Drive/Colab Notebooks/'"
+"0","df = pd.read_csv(ruta+'datos_clima_wsu.csv')"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'pd' is not defined
+"
+"0","Times = df['Date Time'] # Date"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'df' is not defined
+"
+"0","Temperatura = df['T(C°)'] #Valiable"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'df' is not defined
+"
+"0","#Tamaño de los Datos históricos"
+"0","Temperatura = Temperatura[(7*144):(22*144)] "
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'Temperatura' is not defined
+"
+"0","Temperatura = Temperatura + 273.15 "
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'Temperatura' is not defined
+"
+"0","y = pd.DataFrame({'Times': Times, 'Temperatura': Temperatura})"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'pd' is not defined
+"
+"0","# Convertir la columna 'fecha' al formato datetime de pandas"
+"0","y['Times'] = pd.to_datetime(y['Times'], format='%d.%m.%Y %H:%M:%S')"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'pd' is not defined
+"
+"0","# Establecer la columna 'fecha' como el índice de la serie de tiempo"
+"0","y.set_index('Times', inplace=True)"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'y' is not defined
+"
+"0","y = y['Temperatura'].fillna(method='ffill')"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'y' is not defined
+"
+"0","y = y.values.reshape(-1, 1)"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'y' is not defined
+"
+"0","# Escalamos los datos"
+"0","scaler = MinMaxScaler(feature_range=(0, 1))"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'MinMaxScaler' is not defined
+"
+"0","scaler = scaler.fit(y)"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'scaler' is not defined
+"
+"0","y = scaler.transform(y)"
+"2","Traceback (most recent call last):
+  File ""<string>"", line 1, in <module>
+NameError: name 'scaler' is not defined
+"

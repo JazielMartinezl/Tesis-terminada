@@ -1,0 +1,23 @@
+---
+lang: es
+---
+
+# Objetivos {.unnumbered}
+
+## Objetivo General
+
+::: {style="text-align: justify"}
+Comparar el pronóstico obtenido a partir de datos históricos las variables climáticas, generados por la Red Neuronal Artificial (RNA) Long Short-Term Memory (LSTM) y la red neuronal convolucional (CNN), utilizando métricas de error relevantes para evaluar su desempeño.
+:::
+
+## Objetivos Específicos
+
+::: {style="text-align: justify"}
+<!-- Analizar el desempeño de distintos modelos de redes neuronales artificianles para la predicción de variables climáticas. -->
+
+1.  Evaluar y comparar el rendimiento de la Red Neuronal Artificial de memoria a corto y largo plazo (LSTM) y la Red Neuronal Convolucional (CNN).
+
+2.  Analizar y comparar los patrones, tendencias y propiedades de los datos históricos con pronósticos generados por las redes neuronales artificiales, para entender los factores que influyen en la generación de pronósticos.
+
+3.  Abordar el uso de paqueterías en los lenguajes de programación de Python y R, que serán asociadas en las implementaciones de las redes neuronales mencionadas.
+:::

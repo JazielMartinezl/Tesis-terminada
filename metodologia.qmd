@@ -1,0 +1,43 @@
+---
+lang: es
+---
+
+## Metodología.
+
+::: {style="text-align: justify"}
+En esta sección se describe el enfoque metodológico empleado para evaluar la eficacia de los pronósticos mediante modelos estadísticos y computacionales avanzados, tales como la red neuronal LSTM y la red neuronal convolucional (CNN).
+
+El proceso metodológico se divide en las siguientes etapas:
+:::
+
+### Recolección de datos.
+
+::: {style="text-align: justify"}
+La recopilación de datos históricos, se llevó a cabo mediante una rigurosa selección en los datos mas relevantes para el estudio. Se priorizó la elección de aquellos conjuntos que reflejaran adecuadamente el fenómeno en cuestión, proporcionando una base sólida para la evaluación de los modelos de pronóstico.
+:::
+
+### Limpieza y procesamiento de datos.
+
+::: {style="text-align: justify"}
+Los datos recopilados fueron sometidos a un proceso exhaustivo de limpieza y preprocesamiento. Este paso incluyó la eliminación de datos inconsistentes o erróneos, así como la estandarización y normalización de variables relevantes en intervalos de tiempo adecuados. El propósito fue asegurar la integridad y la calidad de los datos para el análisis subsiguiente.
+:::
+
+### Implementación del modelo.
+
+::: {style="text-align: justify"}
+Se evaluaron diversos modelos predictivos, tales como la red neuronal LSTM y la red neuronal convolucional (CNN), los cuales, fueron implementados utilizando herramientas computacionales sofisticadas. Se configuraron los parámetros en la arquitectura de los modelos y se ajustaron los modelos de acuerdo a los datos históricos utilizados para su estudio. Es importante resaltar la dificultad de ajuste para evitar el sobreentrenamiento de las redes y obtener pronósticos aceptables. Esta etapa implicó la prueba de diferentes tamaños de conjunto de datos históricos y del tamaño de los pronósticos.
+:::
+
+<!-- realizaron pruebas preliminares con los múltiples modelos para evaluar su desempeño inicial. -->
+
+<!-- y se seleccionó el más adecuado en función a las metricas de rendimiento  de los datos climáticos.  -->
+
+### Comparación de resultados.
+
+::: {style="text-align: justify"}
+Los resultados obtenidos de los modelos fueron comparados entre sí para determinar su eficacia predictiva relativa. Se utilizó el Error Cuadrático Medio (RMSE) como métrica de evaluación para cada modelo. Además, se analizaron las fortalezas y debilidades de cada modelo en función de su desempeño en la predicción de las variables de interés. Este análisis permitió identificar qué modelos ofrecían mejores resultados y en qué aspectos específicos presentaban limitaciones.
+:::
+
+### Análisis y conclusión.
+
+Finalmente, se realizó un análisis profundo y detallado de los resultados lo cual permitió llegar a las conclusiones del estudio.

@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Series de tiempo – Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./herramientas.html" rel="next">
+<link href="./Estadistica.html" rel="prev">
+<link href="./logofcfm.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1d566dabc24bf713d8423e28b81a4ff.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d920699d4f1f5826de366111388187f3.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d6ea0af10a877556433e7addd9f09a7f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-d9caa54feebaedcb82937774cd9e6d58.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="4&nbsp; Series de tiempo – Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.">
+<meta property="og:description" content="">
+<meta property="og:image" content="series_files/figure-html/fig-realizacion-1.png">
+<meta property="og:site_name" content="Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./series.html">Series de tiempo</a></li><li class="breadcrumb-item"><a href="./series.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./LOGO50.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Comparación-de-pronósticos-de-variables-climaticas-mediante-adaptación-de-redes-neuronales-artificiales-LSTM-y-convolucional..pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Comparación-de-pronósticos-de-variables-climaticas-mediante-adaptación-de-redes-neuronales-artificiales-LSTM-y-convolucional..epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Resumen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Objetivos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Objetivos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Preliminares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Probabilidad.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Nociones basicas de Probabilidad</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Estadistica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Series de tiempo</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./series.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Herramientas de inteligencia artificial</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./herramientas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Herramientas de inteligencia artificial</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Redes neuronales</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./redes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Redes neuronales Biológicas y artificiales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Estudio de caso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metodologia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metodología.</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./estudio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estudio de caso</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Conclusiones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusiones</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Propuestas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propuestas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lista de obras consultadas</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#serie-de-tiempo" id="toc-serie-de-tiempo" class="nav-link active" data-scroll-target="#serie-de-tiempo"><span class="header-section-number">4.0.1</span> Serie de tiempo</a></li>
+  <li><a href="#realización" id="toc-realización" class="nav-link" data-scroll-target="#realización"><span class="header-section-number">4.0.2</span> Realización</a></li>
+  <li><a href="#sec-autocorrelación" id="toc-sec-autocorrelación" class="nav-link" data-scroll-target="#sec-autocorrelación"><span class="header-section-number">4.1</span> Autocorrelación</a></li>
+  <li><a href="#sec-series-estacionales" id="toc-sec-series-estacionales" class="nav-link" data-scroll-target="#sec-series-estacionales"><span class="header-section-number">4.2</span> Series de tiempo estacionales</a></li>
+  <li><a href="#sec-ruidob" id="toc-sec-ruidob" class="nav-link" data-scroll-target="#sec-ruidob"><span class="header-section-number">4.3</span> Proceso de ruido blanco</a></li>
+  <li><a href="#densidad-espectral" id="toc-densidad-espectral" class="nav-link" data-scroll-target="#densidad-espectral"><span class="header-section-number">4.4</span> Densidad espectral</a>
+  <ul class="collapse">
+  <li><a href="#estimación-de-la-densidad-espectral" id="toc-estimación-de-la-densidad-espectral" class="nav-link" data-scroll-target="#estimación-de-la-densidad-espectral"><span class="header-section-number">4.4.1</span> Estimación de la densidad espectral</a></li>
+  </ul></li>
+  <li><a href="#sec-AR" id="toc-sec-AR" class="nav-link" data-scroll-target="#sec-AR"><span class="header-section-number">4.5</span> Modelo Autorregresivo</a>
+  <ul class="collapse">
+  <li><a href="#operador-de-retroceso-de-un-ar1" id="toc-operador-de-retroceso-de-un-ar1" class="nav-link" data-scroll-target="#operador-de-retroceso-de-un-ar1"><span class="header-section-number">4.5.1</span> Operador de retroceso de un AR(1)</a></li>
+  </ul></li>
+  <li><a href="#densidad-espectral-de-un-modelo-ar1" id="toc-densidad-espectral-de-un-modelo-ar1" class="nav-link" data-scroll-target="#densidad-espectral-de-un-modelo-ar1"><span class="header-section-number">4.6</span> Densidad espectral de un modelo AR(1)</a></li>
+  <li><a href="#modelos-ar1-con-raíces-cercanas-a-1" id="toc-modelos-ar1-con-raíces-cercanas-a-1" class="nav-link" data-scroll-target="#modelos-ar1-con-raíces-cercanas-a-1"><span class="header-section-number">4.7</span> Modelos AR(1) con raíces cercanas a +1</a></li>
+  <li><a href="#descomposición-de-series-de-tiempo" id="toc-descomposición-de-series-de-tiempo" class="nav-link" data-scroll-target="#descomposición-de-series-de-tiempo"><span class="header-section-number">4.8</span> Descomposición de series de tiempo</a>
+  <ul class="collapse">
+  <li><a href="#conjunto-de-datos-de-series-temporales" id="toc-conjunto-de-datos-de-series-temporales" class="nav-link" data-scroll-target="#conjunto-de-datos-de-series-temporales"><span class="header-section-number">4.8.1</span> Conjunto de datos de series temporales</a></li>
+  </ul></li>
+  <li><a href="#sec-KPSS" id="toc-sec-KPSS" class="nav-link" data-scroll-target="#sec-KPSS"><span class="header-section-number">4.9</span> La prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS)</a></li>
+  <li><a href="#evaluación-de-la-precisión-de-los-pronósticos" id="toc-evaluación-de-la-precisión-de-los-pronósticos" class="nav-link" data-scroll-target="#evaluación-de-la-precisión-de-los-pronósticos"><span class="header-section-number">4.10</span> Evaluación de la precisión de los pronósticos</a>
+  <ul class="collapse">
+  <li><a href="#sec-MSE" id="toc-sec-MSE" class="nav-link" data-scroll-target="#sec-MSE"><span class="header-section-number">4.10.1</span> MSE</a></li>
+  <li><a href="#sec-RMSE" id="toc-sec-RMSE" class="nav-link" data-scroll-target="#sec-RMSE"><span class="header-section-number">4.10.2</span> RMSE</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./series.html">Series de tiempo</a></li><li class="breadcrumb-item"><a href="./series.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align: justify">
+<p>El surgimiento del análisis de series temporales se originó a partir de la necesidad de comprender y prever fenómenos que evolucionan con el tiempo. Este tipo de análisis tiene sus raíces en las primeras civilizaciones que registraron datos relacionados con fenómenos astronómicos y económicos. Un ejemplo de ello son los antiguos babilonios, quienes mantenían registros detallados de los movimientos planetarios, lo que les permitió identificar patrones cíclicos. De manera similar, los astrónomos griegos, como Hiparco y Ptolomeo, llevaron a cabo observaciones sistemáticas que contribuyeron al descubrimiento de ciclos en los movimientos celestes.</p>
+<p>A inicios del siglo XX, el economista británico Sir Arthur Bowley y el estadístico ruso Andrey Kolmogorov realizaron importantes aportes al campo del análisis de series temporales. Bowley, en su obra <span class="citation" data-cites="bowley1926elements">(<a href="references.html#ref-bowley1926elements" role="doc-biblioref">Bowley 1926</a>)</span>, utilizó gráficos para representar datos de series temporales y analizar las tendencias económicas. Por su parte, Kolmogorov, en su estudio <span class="citation" data-cites="kolmogorov1941interpolation">(<a href="references.html#ref-kolmogorov1941interpolation" role="doc-biblioref">Kolmogorov 1941</a>)</span>, desarrolló teorías matemáticas fundamentales sobre los procesos estocásticos, que resultaron cruciales para el análisis de series temporales.</p>
+<p>En esta sección, se iniciará presentando la definición formal de serie de tiempo como un caso particular de un proceso estocástico, junto con sus propiedades, las cuales son fundamentales para el desarrollo posterior de los temas.</p>
+</div>
+<section id="serie-de-tiempo" class="level3" data-number="4.0.1">
+<h3 data-number="4.0.1" class="anchored" data-anchor-id="serie-de-tiempo"><span class="header-section-number">4.0.1</span> Serie de tiempo</h3>
+<div id="def-ts" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 4.1</strong></span> Una serie de tiempo <span class="math inline">\(\{X_t\}\)</span> donde <span class="math inline">\(t\)</span> denota el tiempo, es una realización de un proceso estocástico <span class="math inline">\(\{X_t(\omega)\}\)</span> donde <span class="math inline">\(\omega\)</span> pertenece al espacio de probabilidad. Cada <span class="math inline">\(X_t\)</span> representa un valor de la variable en el tiempo <span class="math inline">\(t\)</span>, y su comportamiento es determinado por una distribución de probabilidad.</p>
+<p>El espacio parametral T puede toma valores dos formas principales dependiendo del tipo de proceso. Si <span class="math inline">\(T\)</span> es un conjunto discreto de valores, como <span class="math inline">\(T= \{0,1,2,3 \}\)</span>, se dice que el proceso es de parámetro discreto. Este tipo de proceso se representa mediante <span class="math inline">\(X_n\)</span>, donde <span class="math inline">\(X_n\)</span> indica el valor del proceso en el tiempo <span class="math inline">\(n\)</span>.</p>
+<p>Por otro lado, si el conjunto parametral <span class="math inline">\(T\)</span> toma valores en un intervalo continuo, como, <span class="math inline">\(T=[0,\infty)\)</span>, el proceso se clasifica como un proceso de parámetro continuo y se representa mediante <span class="math inline">\(\{X_t:t \geq 0\}\)</span>. En este caso, los tiempos <span class="math inline">\(t\)</span> son continuos y el proceso se define para todos los valores de <span class="math inline">\(t\)</span> en el intervalo <span class="math inline">\([0,\infty)\)</span>.</p>
+</div>
+</section>
+<section id="realización" class="level3" data-number="4.0.2">
+<h3 data-number="4.0.2" class="anchored" data-anchor-id="realización"><span class="header-section-number">4.0.2</span> Realización</h3>
+<div id="def-realizacion" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 4.2</strong></span> &nbsp;</p>
+<!-- Una realización de serie de tiempo $\{X_t\}$ es un conjunto específico de observaciones que representan un valor real, $X_t(\omega)$ para un valor fijo $\omega \in \Omega$. -->
+<p>Sea <span class="math inline">\(\omega \in \Omega\)</span>. Una realización de serie de tiempo <span class="math inline">\(\{X_t\}\)</span> es un conjunto específico de observaciones que corresponde a los valores reales <span class="math inline">\(X_t(\omega)\)</span>.</p>
+</div>
+<div id="exm-realizacion" class="theorem example" style="text-align: justify">
+<p><span class="theorem-title"><strong>Ejemplo 4.1</strong></span> &nbsp;</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Serie de Tiempo: Precios de las Acciones de Tesla (1 de Enero de 2020 - 30 de Abril de 2021)</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La <a href="#fig-realizacion" class="quarto-xref">Figura&nbsp;<span>4.1</span></a> presenta un gráfico que muestra la evolución de los precios de las acciones de Tesla desde el 1 de Enero de 2020 hasta el 30 de Abril de 2021. El análisis revela una tendencia alcista pronunciada que alcanzó su punto máximo en enero de 2021. Posteriormente, los precios permanecieron relativamente estables hasta Febrero de 2021, momento en el que experimentaron una caída. Al redactar esta sección, se observa una leve recuperación en el valor de las acciones.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-realizacion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-realizacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="series_files/figure-html/fig-realizacion-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-realizacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.1: Precios de las acciones de Tesla desde el 1 de Enero de 2020 hasta el 30 de Abril de 2021.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-autocorrelación" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="sec-autocorrelación"><span class="header-section-number">4.1</span> Autocorrelación</h2>
+<div id=".remark" style="text-align: justify">
+<p>Dentro del interés de las series de tiempo, como el análisis de la media y la varianza para dos variables aleatorias <span class="math inline">\(X(t_1)\)</span> y <span class="math inline">\(X(t_2)\)</span> para <span class="math inline">\(t_1,t_2 \in T.\)</span> Es la forma en que se relacionan dos valores dentro de la misma serie de tiempo esto se refiere a la <a href="./Estadistica.html#sec-correlacion">correlación</a> que se puede ver en la misma serie con la autocorrelación y denota por la expresión (<a href="#eq-autocorr" class="quarto-xref"><span>4.2</span></a>).</p>
+<p><span id="eq-autocov"><span class="math display">\[
+\gamma(t_1,t_2):=\mathrm{E}[(X(t_1)-\mu(t_1))(X(t_2)-\mu(t_2))]
+\tag{4.1}\]</span></span> y <span id="eq-autocorr"><span class="math display">\[
+\rho(t_1,t_2):= \frac{\gamma(t_1,t_2)}{\sigma(t_1)\sigma(t_2)}
+\tag{4.2}\]</span></span> donde la expresión en (<a href="#eq-autocov" class="quarto-xref"><span>4.1</span></a>) calcula la autocovarianza.</p>
+</div>
+<div style="text-align: justify">
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Autocorrelación : Datos sobre el lince canadiense</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La <a href="#fig-autoc" class="quarto-xref">Figura&nbsp;<span>4.2</span></a> (a) muestra la cantidad anual de linces canadienses atrapados en el distrito del río Mackenzie en el noroeste de Canadá durante el período <span class="math inline">\(1821-1934\)</span>. Las autocorrelaciones de la población de los linces canadienses se presentan en la <a href="#fig-autoc" class="quarto-xref">Figura&nbsp;<span>4.2</span></a> (b).</p>
+<div id="fig-autoc" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-autoc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-autoc" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-autoc-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-autoc-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="series_files/figure-html/fig-autoc-1.png" class="img-fluid figure-img" data-ref-parent="fig-autoc" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-autoc-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Datos sobre el lince canadiense
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-autoc" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-autoc-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-autoc-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="series_files/figure-html/fig-autoc-2.png" class="img-fluid figure-img" data-ref-parent="fig-autoc" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-autoc-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Autocorrelación de la muestra
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-autoc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.2: Gráfico de autocorrelaciones de la población de linces (1820 - 1934).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- [correlación](Estadistica.qmd#sec-correlacion) -->
+<!-- [covarianza](Estadistica.qmd#sec-covarianza) -->
+</section>
+<section id="sec-series-estacionales" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="sec-series-estacionales"><span class="header-section-number">4.2</span> Series de tiempo estacionales</h2>
+<div style="text-align: justify">
+<p>Las series de tiempo, al ser procesos estocásticos, poseen sus mismas propiedades, como es el caso de las estacionalidad. En consecuencia, se define en seguida un proceso estrictamente estacionario.</p>
+</div>
+<div id="def-pecreciente" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 4.3 (Proceso estrictamente estacionario)</strong></span> Un proceso es estrictamente estacionario si la distribución conjunta de cualquier conjunto de observaciones es invariante bajo desplazamientos en el tiempo. Para cualquier <span class="math inline">\(t_1,t_2, \dots,t_n\)</span> y cualquier desplazamiento <span class="math inline">\(h\)</span>, la distribución conjunta de <span class="math inline">\((X_{t_1},X_{t_2},\dots,X_{t_n})\)</span> es la misma que <span class="math inline">\((X_{t_1+h},X_{t_2+h},\dots,X_{t_n+h})\)</span></p>
+</div>
+<div id="def-estcov" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 4.4 (Estacionariedad por covarianza)</strong></span> La serie de tiempo <span class="math inline">\(\{X(t)\}\)</span> donde <span class="math inline">\(t \in T\)</span> se considera estacionaria por covarianza si</p>
+<ol type="i">
+<li><p><span class="math inline">\(\mu_{_{X_t}}=\mathrm E[X(t)] = \mu\)</span> (media constante para todo <span class="math inline">\(t\)</span>).</p></li>
+<li><p><span class="math inline">\(\sigma^2_{_{X_t}}=\mathrm{Var}[X(t)] = \sigma^2 &lt; \infty\)</span> (es decir, una constante finita para todo <span class="math inline">\(t\)</span>).</p></li>
+<li><p><span class="math inline">\(\gamma_{_{X_{t_1},X_{t_2}}}\)</span> y <span class="math inline">\(\rho_{_{X_{t_1},X_{t_2}}}\)</span> depende solo de <span class="math inline">\(t_2 − t_1\)</span>.</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-ruidob" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="sec-ruidob"><span class="header-section-number">4.3</span> Proceso de ruido blanco</h2>
+<div style="text-align: justify">
+<p>Un <a href="./series.html#sec-ruidob">proceso de ruido blanco</a> es clave en el análisis de series de tiempo, ya que representa un proceso completamente aleatorio donde no hay correlación entre observaciones en diferentes tiempos. Esto implica que no existen patrones o dependencias temporales dentro de la serie, lo que lo convierte en un punto de referencia importante en la construcción de modelos.</p>
+</div>
+<div id="def-ruidob" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 4.5 (Proceso de ruido blanco)</strong></span> Se dice que un proceso <span class="math inline">\(X_t\)</span> es ruido blanco si se cumplen las siguientes condiciones:</p>
+<ol type="1">
+<li>Cada <span class="math inline">\(X_t\)</span> tiene media cero y varianza finita <span class="math inline">\(\sigma^2_X\)</span>.</li>
+<li><span class="math inline">\(X_{t_1}\)</span> y <span class="math inline">\(X_{t_2}\)</span> no son correlacionadas si <span class="math inline">\(t_1=t_2\)</span>.</li>
+</ol>
+</div>
+<div style="text-align: justify">
+<p>Un proceso de ruido blanco no tiene memoria, lo que significa que el valor en un tiempo <span class="math inline">\(t\)</span> no ofrece ninguna información sobre los valores en otros tiempos.</p>
+<p><strong>Representación gráfica de los datos y comprobación del ruido blanco.</strong></p>
+<p>Siempre que se ajusta un modelo a un conjunto de datos, primero se debe representar gráficamente los datos y las autocorrelaciones de muestra. Algo que se debe comprobar en estos gráficos es si los datos son simplemente ruido blanco o si muestran una estructura no estacionaria evidente. Una prueba rápida de ruido blanco se basa en los siguientes hechos sobre las autocorrelaciones de muestra de los datos de ruido blanco.</p>
+<p><span class="math display">\[
+E\left[ \hat{\rho}_k \right] \approx 0 \quad \text{para} \quad k \neq 0.
+\]</span></p>
+<p>El error estándar de <span class="math inline">\(\hat{\rho}_k\)</span> es aproximadamente <span class="math inline">\(1/\sqrt{n}\)</span>, <span class="math inline">\(k \neq 0\)</span>, por lo que para <span class="math inline">\(n\)</span> moderadamente grande, los <span class="math inline">\(\hat{\rho}_k\)</span> deberían ser pequeños. <span class="math inline">\(\hat{\rho}_{k_1}\)</span> y <span class="math inline">\(\hat{\rho}_{k_2}\)</span> son esencialmente no correlacionados cuando <span class="math inline">\(k_1 \neq k_2\)</span>. <!-- Basándonos en los hechos anteriores, rechazamos $H_0: \rho_k = 0$ vs. $H_a: \rho_k \neq 0$ al nivel de significancia del $5\%$ si $$ \| \hat{\rho}\_k \| \> 1.96 \left( \frac{1}{\sqrt{n}} \right). $$ --> Es común acompañar las gráficas de autocorrelaciones muéstrales que podrían provenir de ruido blanco con líneas límite <span class="math inline">\((95\%)\)</span> en <span class="math inline">\(\pm 2/\sqrt{n}\)</span>.</p>
+</div>
+<div style="text-align: justify">
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Representacion grafica de un ruido blanco</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La <a href="#fig-noise" class="quarto-xref">Figura&nbsp;<span>4.4</span></a> muestra una realización de longitud <span class="math inline">\(n = 150\)</span> a partir de un proceso de ruido blanco generado por la librería (tswge) en R.</p>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tswge)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generar una realización de ruido blanco</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">147</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">gen.arma.wge</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">phi =</span> <span class="dv">0</span>, <span class="at">theta =</span> <span class="dv">0</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="fig-noise" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="series_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.3: Gráfica de un ruido blanco
+</figcaption>
+</figure>
+</div>
+<p>La <a href="#fig-noise" class="quarto-xref">Figura&nbsp;<span>4.4</span></a> es coherente con el ruido blanco en el sentido de que no hay patrones cíclicos ni desviaciones y los datos simplemente parecen ser aleatorios sin correlación con otros valores.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="densidad-espectral" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="densidad-espectral"><span class="header-section-number">4.4</span> Densidad espectral</h2>
+<div style="text-align: justify">
+<p>Para identificar el contenido en frecuencias de una serie temporal estacionaria, se utiliza el espectro, o en su forma estandarizada, la densidad espectral. Esta herramienta es fundamental para detectar el comportamiento subyacente de las frecuencias en los datos de series temporales estacionarias.</p>
+</div>
+<div id="def-espectro" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 4.6 (Especto)</strong></span> Sea <span class="math inline">\(( X_t )\)</span> una serie temporal estacionaria con autocovarianza <span class="math inline">\(( \gamma_k )\)</span> y autocorrelación <span class="math inline">\((\rho_k)\)</span>. Entonces para <span class="math inline">\(|f| \leq 0.5\)</span> :</p>
+<p>El espectro de <span class="math inline">\(( X_t )\)</span> está definido por, <span id="eq-espectro"><span class="math display">\[
+    P_X(f) = \sum_{k=-\infty}^{\infty} e^{-2\pi ifk} \gamma_k.
+\tag{4.3}\]</span></span></p>
+</div>
+<div id="def-despectral" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 4.7 (Densidad espectral)</strong></span> Sea <span class="math inline">\(( X_t )\)</span> una serie temporal estacionaria con autocovarianza <span class="math inline">\(( \gamma_k )\)</span> y autocorrelación <span class="math inline">\(( \rho_k )\)</span>. Entonces para <span class="math inline">\(|f| \leq 0.5\)</span> :</p>
+<p>La densidad espectral de <span class="math inline">\(( X_t )\)</span> está definido por <span id="eq-despectral"><span class="math display">\[
+    S_X(f) = \sum_{k=-\infty}^{\infty} e^{-2\pi ifk} \rho_k.
+\tag{4.4}\]</span></span></p>
+</div>
+<div style="text-align: justify">
+<p><strong>Formula de Euler.</strong> El espectro y la densidad espectral de una serie temporal se definen como funciones de frecuencia. A continuación se indican algunas fórmulas trigonométricas y de variables complejas importantes para completar:</p>
+<ol type="a">
+<li><p><span class="math inline">\(\sin(- \theta) = - \sin (\theta)\)</span></p></li>
+<li><p><span class="math inline">\(\cos( \theta) = \cos (- \theta)\)</span></p></li>
+<li><p><span class="math inline">\(e^{i \theta} = \cos (\theta) + i \sin (\theta)\)</span></p></li>
+<li><p><span class="math inline">\(e\^{-i \theta} = \cos (\theta) - i \sin (\theta)\)</span></p></li>
+</ol>
+<p>Utilizando la fórmula de Euler, se obtienen las fórmulas : <span id="eq-espectro2"><span class="math display">\[
+P_X(f) = \sigma_X^2 + 2 \sum_{k=1}^{\infty} \gamma_k \cos(2\pi fk),
+\tag{4.5}\]</span></span> y <span id="eq-despectral3"><span class="math display">\[
+S_X(f) = 1 + 2 \sum_{k=1}^{\infty} \rho_k \cos(2\pi fk).
+\tag{4.6}\]</span></span></p>
+<p>Estas fórmulas enfatizan que el espectro y la densidad espectral son funciones de valores reales, lo cual no es evidente a partir de las ecuaciones (<a href="#eq-espectro" class="quarto-xref"><span>4.3</span></a>) y (<a href="#eq-despectral" class="quarto-xref"><span>4.4</span></a>).</p>
+</div>
+<section id="estimación-de-la-densidad-espectral" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="estimación-de-la-densidad-espectral"><span class="header-section-number">4.4.1</span> Estimación de la densidad espectral</h3>
+<div style="text-align: justify">
+<p>Dada una realización de longitud <span class="math inline">\(n\)</span> de una serie temporal, no se dispone con suficiente información para calcular la densidad espectral “real” descrita en la ecuación (<a href="#eq-despectral3" class="quarto-xref"><span>4.6</span></a>), que requiere una suma infinita de autocorrelaciones. Además, en un conjunto real de datos de series temporales, las autocorrelaciones “real” no son conocidas. Aunque la ecuación (<a href="#eq-despectral3" class="quarto-xref"><span>4.6</span></a>) involucra una suma infinita de autocorrelaciones <span class="math inline">\(\rho_k\)</span>, solo se cuenta con estimaciones <span class="math inline">\(\hat{\rho}_k\)</span> definidas en (3.12). Según (3.10), para una realización de longitud <span class="math inline">\(n\)</span>, se puede calcular <span class="math inline">\(\hat{\rho}_k\)</span> para <span class="math inline">\(k = 1, 2, ..., n-1\)</span>.</p>
+</div>
+<section id="sec-ESDM" class="level4" data-number="4.4.1.1">
+<h4 data-number="4.4.1.1" class="anchored" data-anchor-id="sec-ESDM"><span class="header-section-number">4.4.1.1</span> La densidad espectral de la muestra</h4>
+<p>La estimación natural de la densidad espectral se obtiene al sustituir las autocorrelaciones de la muestra en la fórmula para <span class="math inline">\(S_X(f)\)</span>. Usando</p>
+<p><span id="eq-espectralestimate"><span class="math display">\[
+\hat{S}_X(f) = 1 + 2 \sum_{k=1}^{n-1} \hat{\rho}_k \cos(2\pi f k), \quad |f| \leq 0.5
+\tag{4.7}\]</span></span></p>
+<p>La estimación en (<a href="#eq-espectralestimate" class="quarto-xref"><span>4.7</span></a>) es llamada <strong>estimación de la densida espectral</strong>.</p>
+</section>
+</section>
+</section>
+<section id="sec-AR" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="sec-AR"><span class="header-section-number">4.5</span> Modelo Autorregresivo</h2>
+<div style="text-align: justify">
+<div id="def-AR1" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 4.8 (Modelo AR(1))</strong></span> Se dice que la serie temporal, <span class="math inline">\(X_t,\)</span> satisface un modelo AR(1) si, <span id="eq-ar1"><span class="math display">\[
+X_t = \beta + \phi_1 X_{t-1} + a_t
+\tag{4.8}\]</span></span></p>
+</div>
+<p>donde <span class="math inline">\(\phi_1\)</span> es una constante real distinta de cero y <span class="math inline">\(a_t\)</span> es un <a href="./series.html#sec-ruidob">proceso de ruido blanco</a> con varianza finita <span class="math inline">\(\sigma_a^2.\)</span> La constante <span class="math inline">\(\beta = (1- \phi_1) \mu\)</span>, se denomina <strong>constante de media móvil</strong>. En esencia, el modelo AR(1) especifica que el valor del proceso en el momento <span class="math inline">\(t\)</span> depende del valor del proceso en el momento <span class="math inline">\(t −1\)</span>, más un componente de ruido aleatorio <span class="math inline">\(a_t\)</span>, y una constante <span class="math inline">\(\beta\)</span>.</p>
+<div id="thm-AR1es" class="theorem" style="text-align: justify">
+<p><span class="theorem-title"><strong>Teorema 4.1 (Estacionareidad de un AR(1))</strong></span> Un proceso AR(1) es estacionario si y solo si <span class="math inline">\(\phi_1 &lt; 1\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Prueba</em>. </span>Vea <span class="citation" data-cites="woodward2017applied">Woodward, Gray, y Elliott (<a href="references.html#ref-woodward2017applied" role="doc-biblioref">2017</a>)</span>.</p>
+</div>
+</div>
+<section id="operador-de-retroceso-de-un-ar1" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="operador-de-retroceso-de-un-ar1"><span class="header-section-number">4.5.1</span> Operador de retroceso de un AR(1)</h3>
+<div style="text-align: justify">
+<p>El modelo AR(1) se expresa a veces utilizando el operador de retroceso definido por <span class="math inline">\(BX_t  = X_{t−1}.\)</span> Nótese que <span class="math inline">\(B_c = c\)</span> para una constante <span class="math inline">\(c\)</span>. El modelo AR(1) mostrado en la ecuación (<a href="#eq-ar1" class="quarto-xref"><span>4.8</span></a>) se puede escribir como:</p>
+<p><span id="eq-op"><span class="math display">\[
+X_t= (1-\phi) \mu + \phi X_{t-1} + a_t
+\tag{4.9}\]</span></span></p>
+<p>La ecuación (<a href="#eq-ar1" class="quarto-xref"><span>4.8</span></a>) también se puede expresar de la siguiente forma:</p>
+<p><span id="eq-op1"><span class="math display">\[
+X_t-\mu - \phi_1(X_{t-1} - \mu) = a_t
+\tag{4.10}\]</span></span></p>
+<p>O , en la notación del operador de desplazamiento hacia atrás:</p>
+<p><span id="eq-op2"><span class="math display">\[
+(1-\phi_1 B)(X_t-\mu) = a_t
+\tag{4.11}\]</span></span></p>
+<p>Alternativamente, también puede ser definido como:</p>
+<p><span id="eq-op3"><span class="math display">\[
+\phi(B)(X_t - \mu) = a_t
+\tag{4.12}\]</span></span></p>
+<p>Donde <span class="math inline">\(\phi (B)\)</span> es el operado definido como <span class="math inline">\(\phi (B) = 1- \phi_1 B.\)</span></p>
+</div>
+<div class="proof remark">
+<p><span class="proof-title"><em>Observación</em>. </span>Si un proceso AR(1) <span class="math inline">\(X_t\)</span> tiene media <span class="math inline">\(\mu\)</span>, se puede crear un proceso de media cero <span class="math inline">\(\tilde{X}_t\)</span> , definiéndolo como <span class="math inline">\(\tilde{X}_t = X_t - \mu.\)</span></p>
+</div>
+</section>
+</section>
+<section id="densidad-espectral-de-un-modelo-ar1" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="densidad-espectral-de-un-modelo-ar1"><span class="header-section-number">4.6</span> Densidad espectral de un modelo AR(1)</h2>
+<p>En el caso del modelo AR(1), la densidad espectral está dada por,</p>
+<p><span id="eq-dear1"><span class="math display">\[
+\begin{split}
+  S_X(f) &amp;= \frac{\sigma_a^2}{\gamma_0} \frac{1}{\left| 1 - \phi_1 e^{-2 \pi i f} \right|^2} \\
+        &amp;= \frac{1 - \phi_1^2}{\left| 1 - \phi_1 e^{-2 \pi i f} \right|^2}.
+\end{split}
+\tag{4.13}\]</span></span></p>
+<p>Usando la fórmula de Euler, <span class="math inline">\(e^{-2\pi if} = \cos 2 \pi if - i \sin 2\pi if\)</span> , el denominador de la ecuación (<a href="#eq-dear1" class="quarto-xref"><span>4.13</span></a>) se convierte en</p>
+<p><span id="eq-dear2"><span class="math display">\[
+\begin{split}
+  \left| 1 - \phi_1 e^{-2 \pi i f} \right|^2 &amp;= \left| 1 - \phi_1 \left( \cos 2 \pi f - i \sin 2 \pi f     \right) \right|^2\\
+  &amp;= \left| (1 - \phi_1 \cos 2 \pi f) - i \phi_1 \sin 2 \pi f \right|^2\\
+  &amp;= (1 - \phi_1 \cos 2 \pi f)^2 + (\phi_1 \sin 2 \pi f)^2.
+\end{split}
+\tag{4.14}\]</span></span></p>
+<p>porque <span class="math inline">\(|a + bi|^2 = a^2 + b^2\)</span>, así, la ecuación (<a href="#eq-dear1" class="quarto-xref"><span>4.13</span></a>) se puede escribir como,</p>
+<p><span id="eq-dear3"><span class="math display">\[
+S_X(f) = \frac{1 - \phi_1^2}{(1 - \phi_1 \cos 2 \pi f)^2 + (\phi_1 \sin 2 \pi f)^2}.
+\tag{4.15}\]</span></span></p>
+<p>En la ecuación (<a href="#eq-dear3" class="quarto-xref"><span>4.15</span></a>) hemos simplificado la fórmula para <span class="math inline">\(S_X (f )\)</span> en la ecuación (<a href="#eq-dear1" class="quarto-xref"><span>4.13</span></a>) para enfatizar el hecho de que <span class="math inline">\(S_X( f)\)</span> es un número real.</p>
+<!--  
+
+## Modelos AR(1) con raíces positivas de la ecuación característica.
+
+::: {style="text-align: justify"}
+Considere el modelo AR(1) $$
+X_t - 0.9 X_{t-1} = a_t.
+$$ {#eq-AR1root} y $$
+X_t - 0.7 X_{t-1} = a_t.
+$$ {#eq-AR1root1} donde $a_t$ es ruido blanco de media cero con varianza $\sigma_a^2$.
+
+:::
+
+-->
+</section>
+<section id="modelos-ar1-con-raíces-cercanas-a-1" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="modelos-ar1-con-raíces-cercanas-a-1"><span class="header-section-number">4.7</span> Modelos AR(1) con raíces cercanas a +1</h2>
+<div style="text-align: justify">
+<p>La <a href="#fig-noise" class="quarto-xref">Figura&nbsp;<span>4.4</span></a> muestra realizaciones de dos modelos AR(1) con raíces cercanas a uno en valor absoluto. Específicamente, se mostraron realizaciones de modelos AR(1) <span class="math inline">\((1 - \phi_1 B)(X_t - 10) = a_t\)</span>, con <span class="math inline">\(\phi_1 = 0.95\)</span> y <span class="math inline">\(\phi_1 = 0.99.\)</span> <!-- Observando que la media teórica del modelo del que se generaron estas realizaciones es $\mu = 10$ (que se traza como una línea horizontal en las gráficas), se puede ver que hay un considerable deambular, aperiodico y sin dirección por encima y por debajo de la media, especialmente para $\phi_1 = 0.99$. --> Esto se describe indicando que, para <span class="math inline">\(\phi_1 = 0.95\)</span> y <span class="math inline">\(0.99,\)</span> las autocorrelaciones, <span class="math inline">\(\rho_k = \phi_1^k,\)</span> son fuertes (o persistentes). Es decir, las autocorrelaciones siguen siendo sustanciales incluso cuando <span class="math inline">\(k\)</span> es moderadamente grande. Como ejemplo, para <span class="math inline">\(\phi_1 = 0.99,\)</span> sorprendentemente <span class="math inline">\(\rho_{50} = 0.99^{50} = 0.61.\)</span> Lo que significa que existe una correlación de <span class="math inline">\(0.61\)</span> entre observaciones separadas por 50 periodos de tiempo.</p>
+<p>El comportamiento de deambular sostenido aumenta a medida que los valores de <span class="math inline">\(\phi_1\)</span> se acercan a <span class="math inline">\(\phi_1 = 1.\)</span> Para <span class="math inline">\(\phi_1 = 1,\)</span> el modelo no es un modelo AR(1) estacionario porque el valor absoluto de la raíz es igual a uno en lugar de mayor a uno.</p>
+<div id="fig-noise" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-noise" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-noise-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-noise-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="series_files/figure-html/fig-noise-1.png" class="img-fluid figure-img" data-ref-parent="fig-noise" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-noise-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Realización con φ1 = .95
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-noise" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-noise-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-noise-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="series_files/figure-html/fig-noise-2.png" class="img-fluid figure-img" data-ref-parent="fig-noise" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-noise-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Realización φ1 = .99
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.4: Grafica de dos modelos AR(1) con raíces cercanas a uno en valor absoluto.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="descomposición-de-series-de-tiempo" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="descomposición-de-series-de-tiempo"><span class="header-section-number">4.8</span> Descomposición de series de tiempo</h2>
+<div style="text-align: justify">
+<p>Se ha identificado que las series de tiempo pueden presentar estacionalidad, una componente que se añade o se multiplica con otras componentes como la tendencia y la aleatoriedad. En el análisis de series temporales, los expertos suelen enfocarse en dos categorías principales de modelos estacionales:</p>
+<p><strong>Datos estacionales aditivos</strong>.</p>
+<p>En estos modelos, los datos <span class="math inline">\(x_t\)</span> en el tiempo <span class="math inline">\(t\)</span> se consideran como una suma de tres componentes: Un componente de tendencia a largo plazo <span class="math inline">\((tr_t)\)</span>, Un componente de estacional <span class="math inline">\((s_t)\)</span> y, Un componente de variabilidad aleatoria <span class="math inline">\((z_t)\)</span>.</p>
+<p>La ecuación que representa este modelo es:</p>
+<p><span id="eq-daditive"><span class="math display">\[
+x_t = s_t + tr_t + z_t.
+\tag{4.16}\]</span></span></p>
+<p><strong>Datos estacionales multiplicativos</strong>.</p>
+<p>En este enfoque, los datos <span class="math inline">\(x_t\)</span> en el tiempo <span class="math inline">\(t\)</span> se expresan como el producto de las mismas tres componentes mencionadas y se representa en la ecuación:</p>
+<p><span id="eq-dmultiplicative"><span class="math display">\[
+x_t = s_t \times tr_t \times z_t
+\tag{4.17}\]</span></span></p>
+</div>
+<section id="conjunto-de-datos-de-series-temporales" class="level3" data-number="4.8.1">
+<h3 data-number="4.8.1" class="anchored" data-anchor-id="conjunto-de-datos-de-series-temporales"><span class="header-section-number">4.8.1</span> Conjunto de datos de series temporales</h3>
+<section id="datos-ciclicos" class="level4" data-number="4.8.1.1">
+<h4 data-number="4.8.1.1" class="anchored" data-anchor-id="datos-ciclicos"><span class="header-section-number">4.8.1.1</span> Datos Ciclicos</h4>
+<div style="text-align: justify">
+<p>Muchos conjuntos de datos de series temporales presentan patrones cíclicos, caracterizados por fluctuaciones que se repiten de manera regular o casi regular a lo largo del tiempo. A este tipo de datos se les suele denominar <strong>pseudoperiódicos</strong>, un término que utilizaremos de manera intercambiable con <strong>cíclicos</strong> para describir su comportamiento.</p>
+<p>Los datos verdaderamente periódicos presentan un comportamiento que se repite de manera exacta a lo largo de un intervalo de tiempo fijo. Un ejemplo claro de este tipo de datos es la curva sinusoidal. En contraste, los datos pseudoperiódicos o cíclicos son aquellos que tienden a repetir patrones, pero sin una regularidad exacta. Los datos de temperatura mensual de Dallas-Ft. Worth (DFW) de la <a href="#fig-dfw" class="quarto-xref">Figura&nbsp;<span>4.5</span></a> son un ejemplo de datos cíclico.</p>
+</div>
+<div id="exm-DFW" class="theorem example" style="text-align: justify">
+<p><span class="theorem-title"><strong>Ejemplo 4.2</strong></span> &nbsp;</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Datos de temperatura para Dallas-Ft. Worth (DFW)</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La <a href="#fig-dfw" class="quarto-xref">Figura&nbsp;<span>4.5</span></a> presenta la temperatura promedio mensual en Dallas-Ft. Worth (DFW) desde Enero de 1900 hasta Diciembre de 2020. Aunque los detalles pueden no ser evidentes a simple vista, las temperaturas siguen el patrón estacional esperado, con valores más bajos en invierno y, en el caso de DFW, temperaturas notablemente altas durante el verano.</p>
+<div id="fig-dfw" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dfw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="series_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dfw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.5: Temperatura media mensual en Dallas-Ft. Worth desde Enero de 1900 hasta Diciembre de 2020
+</figcaption>
+</figure>
+</div>
+<p>Al observar los datos de la <a href="#fig-dfw" class="quarto-xref">Figura&nbsp;<span>4.5</span></a>, se puede apreciar nuevamente el valor de enfocarse en un fragmento de tiempo específico, que en este caso corresponde a los años 1979 a 1986. Para los propósitos del estudio, se define un ciclo como la cantidad de meses entre el mes más caluroso de cada año. En DFW, se identifica que el mes más caluroso es julio o agosto. Es importante notar que los datos de temperatura muestran una progresión suave desde el verano al invierno y viceversa, con temperaturas promedio similares durante el otoño y la primavera. El patrón general que resulta es, de alguna manera, <strong>sinusoidal</strong> o <strong>pseudosinusoidal</strong>.</p>
+<p>Es útil observar que habrá variaciones aleatorias (ruido) en los datos. El mes más cálido de 1979 a 1981 fue Julio. El mes más cálido de 1982 fue Agosto, por lo que el tercer ciclo en el gráfico tiene una duración de 13 meses. Agosto también fue el mes más cálido de 1983 a 1985, por lo que los tres ciclos siguientes tienen una duración de 12 (Agosto a Agosto). Finalmente, en 1986 el mes más cálido fue Julio, por lo que la duración del ciclo correspondiente es de 11 meses. Si bien las duraciones de los ciclos no fueron todas iguales a 12 meses, tenga en cuenta que siempre que ocurre un ciclo de 13 meses, siempre es seguido por un ciclo de 12 meses o de 11 meses para “mantenerse en sincronía o volver a sincronizarse”. Es decir, supongamos que el mes más cálido de un año es Julio y luego los dos años siguientes tuvieron ciclos de temperatura con una duración de 13. Eso indicaría que el mes más cálido del tercer año fue Septiembre, que nunca ha sido el mes más cálido en DFW en el conjunto de datos disponible desde septiembre de 1898.</p>
+<p>Los datos de temperatura de DFW en <a href="#fig-dfw" class="quarto-xref">Figura&nbsp;<span>4.5</span></a> son un ejemplo de datos cíclicos con una duración de ciclo fija. En este caso, el ciclo de 12 meses tiene una causa física: el movimiento regular y predecible de la Tierra alrededor del Sol. Debido a que los ciclos de temperatura están relacionados con el año calendario, los datos de temperatura se denominan datos estacionales.</p>
+<div class="proof remark">
+<p><span class="proof-title"><em>Observación</em>. </span>La diferencia clave entre los datos de manchas solares y los datos de temperatura es que, mientras que las duraciones de los ciclos de manchas solares tienden a variar aleatoriamente entre 9 y 13 años, las duraciones de los ciclos de temperatura son fijas hasta el punto de que permanecen “sincronizadas” con el año de 12 meses.</p>
+</div>
+<div id="fig-dfwtem" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dfwtem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="series_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dfwtem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.6: Temperatura media mensual en Dallas, Texas, correspondiente al periodo de 1979 a 1986, extraído de un fragmento de <a href="#fig-dfw" class="quarto-xref">Figura&nbsp;<span>4.5</span></a>.
+</figcaption>
+</figure>
+</div>
+<div class="proof remark">
+<p><span class="proof-title"><em>Observación</em>. </span>La duración de los ciclos de temperatura es fija hasta el punto de que se mantienen “sincronizados” con el año de 12 meses.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="tendencia" class="level4" data-number="4.8.1.2">
+<h4 data-number="4.8.1.2" class="anchored" data-anchor-id="tendencia"><span class="header-section-number">4.8.1.2</span> Tendencia</h4>
+<div style="text-align: justify">
+<p>Una tendencia (Trends) es una tendencia de los datos a aumentar (o disminuir) de manera constante a lo largo del tiempo.</p>
+<p>Los datos que presentan una tendencia o un comportamiento de deambulación aleatoria no son de naturaleza cíclica. A menudo se les denomina aperiódicos (no periódicos), ya que no exhiben un patrón regular de ascensos y descensos.</p>
+<p>Una tendencia lineal representa una inclinación de los datos a aumentar o disminuir de manera constante a lo largo del tiempo (ver <a href="#fig-trend" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> (a)). Por otro lado, las tendencias pueden seguir una curva, como ocurre con la tendencia exponencial mostrada en la <a href="#fig-trend" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> (b). La <a href="#fig-trend" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> (c) ilustra una serie temporal con una tendencia descendente, aunque más irregular en comparación con las tendencias observadas en las <a href="#fig-trend" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> (a) y <a href="#fig-trend" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> (b). Un patrón común en los conjuntos de datos es el comportamiento deambulante, como el mostrado en la <a href="#fig-trend" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> (d), que parece moverse sin una dirección clara. Es decir, pueden presentarse varias tendencias, tanto cortas como largas, a menudo en direcciones opuestas.</p>
+</div>
+<div id="fig-trend" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="trends.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.7: Gráficos que muestran (a) una tendencia lineal, (b) una tendencia exponencial, (c) una tendencia irregular descendente y (d) un patrón de deambulación.
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-KPSS" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="sec-KPSS"><span class="header-section-number">4.9</span> La prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS)</h2>
+<div style="text-align: justify">
+<p>La prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS) es una prueba estadística utilizada para determinar la estacionariedad de una serie temporal. Evalúa la estacionariedad de una serie temporal mediante el examen de la varianza de los errores acumulados a lo largo del tiempo las hipótesis del tes KPSS son las siguientes:</p>
+<ul>
+<li><p>La hipótesis nula <span class="math inline">\((H_0) :\)</span> el modelo es estacionaria.</p></li>
+<li><p>Hipótesis alternativa <span class="math inline">\((H_1)\)</span> el modelo tiene una raíz unitaria y por tanto no es estacionaria.</p></li>
+</ul>
+<p>El nivel de significancia, se denota por <span class="math inline">\(\alpha\)</span> y representa la probabilidad de rechazar <span class="math inline">\(H_0\)</span>.</p>
+<p>La hipótesis nula de la prueba KPSS se rechaza cuando el valor estadístico de la prueba es mayor que el valor crítico correspondiente a un nivel de significancia determinado como <span class="math inline">\(\alpha = 0.01\)</span> <span class="math inline">\((1 \%)\)</span>, <span class="math inline">\(\alpha = 0.05 (5 \%)\)</span>, o <span class="math inline">\(\alpha = 0.10 (10 \%)\)</span>. El valor más utilizado es <span class="math inline">\(\alpha = 0.05\)</span>. Esto indica que hay suficiente evidencia estadística para concluir que la serie no es estacionaria y, por lo tanto, tiene una raíz unitaria.</p>
+<p>Para calcular la estadística de prueba KPSS se utiliza la siguiente fórmula:</p>
+<p><span class="math display">\[ KPSS = \dfrac{1}{ \hat{\sigma}^2 T } \sum_{t=1}^T \left(    \sum_{i = 1}^t  \hat{u_i}   \right)^2.\]</span></p>
+</div>
+</section>
+<section id="evaluación-de-la-precisión-de-los-pronósticos" class="level2" data-number="4.10">
+<h2 data-number="4.10" class="anchored" data-anchor-id="evaluación-de-la-precisión-de-los-pronósticos"><span class="header-section-number">4.10</span> Evaluación de la precisión de los pronósticos</h2>
+<p>La evaluación de la precisión de los pronósticos es un paso fundamental para determinar la calidad de un modelo predictivo. Para obtener una cuantificación global de la eficacia de las predicciones, es esencial medir qué tan bien coinciden los valores pronosticados <span class="math inline">\((y_t)\)</span> con los valores reales observados <span class="math inline">\((x_t)\)</span> en cada instante de tiempo <span class="math inline">\(t\)</span>. Algunas métricas que se han introducido, permiten resumir de manera concisa e informativa la precisión de las predicciones, proporcionando una visión clara sobre el rendimiento general del modelo. A continuación, se describen algunas de las métricas de rendimiento más utilizadas en este ámbito.</p>
+<section id="sec-MSE" class="level3" data-number="4.10.1">
+<h3 data-number="4.10.1" class="anchored" data-anchor-id="sec-MSE"><span class="header-section-number">4.10.1</span> MSE</h3>
+<p>Mean Squared Error (MSE), o Error Cuadrático Medio, es una métrica que se utiliza para medir la precisión de un modelo de regresión. Se calcula como el promedio de los cuadrados de las diferencias entre los valores predichos <span class="math inline">\(y_t\)</span> y los valores observados <span class="math inline">\(x_t\)</span>. La fórmula para calcular MSE es:</p>
+<p><span id="eq-fmse"><span class="math display">\[
+MSE = \frac{1}{n} \sum_{t=1}^{n} (x_t - y_t)^2.
+\tag{4.18}\]</span></span></p>
+</section>
+<section id="sec-RMSE" class="level3" data-number="4.10.2">
+<h3 data-number="4.10.2" class="anchored" data-anchor-id="sec-RMSE"><span class="header-section-number">4.10.2</span> RMSE</h3>
+<div style="text-align: justify">
+<p>El Error Cuadrático Medio (RMSE) es una medida de la magnitud de los errores entre los valores predichos <span class="math inline">\(y_t\)</span> y los valores observados <span class="math inline">\(x_t\)</span>. Es ampliamente utilizado en la evaluación de la precisión de los modelos de predicción de series temporales debido a su capacidad para interpretar errores grandes y proporcionar una medida clara de la exactitud del modelo.</p>
+<p>La fórmula para el cálculo de RMSE es la siguiente:</p>
+<p><span id="eq-frmse"><span class="math display">\[ RMSE = \sqrt{  \dfrac{\sum_{t=1}^{n} (y_t - x_t)^2}{n }}.
+\tag{4.19}\]</span></span></p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-bowley1926elements" class="csl-entry" role="listitem">
+Bowley, Arthur Lyon. 1926. <em>Elements of statistics</em>. 8. King.
+</div>
+<div id="ref-kolmogorov1941interpolation" class="csl-entry" role="listitem">
+Kolmogorov, Andrey. 1941. <span>«Interpolation and extrapolation of stationary random sequences»</span>. <em>Izvestiya Rossiiskoi Akademii Nauk. Seriya Matematicheskaya</em> 5: 3.
+</div>
+<div id="ref-woodward2017applied" class="csl-entry" role="listitem">
+Woodward, Wayne A, Henry L Gray, y Alan C Elliott. 2017. <em>Applied time series analysis with R</em>. CRC press.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = true;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Estadistica.html" class="pagination-link" aria-label="Algunas nociones de Estadística">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./herramientas.html" class="pagination-link" aria-label="Herramientas de inteligencia artificial">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Herramientas de inteligencia artificial</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Algunas nociones de Estadística – Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./series.html" rel="next">
+<link href="./Probabilidad.html" rel="prev">
+<link href="./logofcfm.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1d566dabc24bf713d8423e28b81a4ff.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d920699d4f1f5826de366111388187f3.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d6ea0af10a877556433e7addd9f09a7f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-d9caa54feebaedcb82937774cd9e6d58.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="3&nbsp; Algunas nociones de Estadística – Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.">
+<meta property="og:description" content="">
+<meta property="og:image" content="Estadistica_files/figure-html/fig-correlacion-1.png">
+<meta property="og:site_name" content="Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Probabilidad.html">Preliminares</a></li><li class="breadcrumb-item"><a href="./Estadistica.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./LOGO50.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Comparación-de-pronósticos-de-variables-climaticas-mediante-adaptación-de-redes-neuronales-artificiales-LSTM-y-convolucional..pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Comparación-de-pronósticos-de-variables-climaticas-mediante-adaptación-de-redes-neuronales-artificiales-LSTM-y-convolucional..epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Resumen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Objetivos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Objetivos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Preliminares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Probabilidad.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Nociones basicas de Probabilidad</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Estadistica.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Series de tiempo</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./series.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Herramientas de inteligencia artificial</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./herramientas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Herramientas de inteligencia artificial</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Redes neuronales</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./redes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Redes neuronales Biológicas y artificiales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Estudio de caso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metodologia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metodología.</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./estudio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estudio de caso</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Conclusiones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusiones</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Propuestas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propuestas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lista de obras consultadas</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#medidas-de-tendencia-central" id="toc-medidas-de-tendencia-central" class="nav-link active" data-scroll-target="#medidas-de-tendencia-central"><span class="header-section-number">3.1</span> Medidas de tendencia central</a></li>
+  <li><a href="#medidas-de-localización" id="toc-medidas-de-localización" class="nav-link" data-scroll-target="#medidas-de-localización"><span class="header-section-number">3.2</span> Medidas de localización</a></li>
+  <li><a href="#medidas-de-dispersión-de-una-muestra" id="toc-medidas-de-dispersión-de-una-muestra" class="nav-link" data-scroll-target="#medidas-de-dispersión-de-una-muestra"><span class="header-section-number">3.3</span> Medidas de dispersión de una muestra</a>
+  <ul class="collapse">
+  <li><a href="#rango-muestral." id="toc-rango-muestral." class="nav-link" data-scroll-target="#rango-muestral."><span class="header-section-number">3.3.1</span> Rango muestral.</a></li>
+  </ul></li>
+  <li><a href="#sec-correlacion" id="toc-sec-correlacion" class="nav-link" data-scroll-target="#sec-correlacion"><span class="header-section-number">3.4</span> Correlación</a></li>
+  <li><a href="#estandarización" id="toc-estandarización" class="nav-link" data-scroll-target="#estandarización"><span class="header-section-number">3.5</span> Estandarización</a></li>
+  <li><a href="#normalización" id="toc-normalización" class="nav-link" data-scroll-target="#normalización"><span class="header-section-number">3.6</span> Normalización</a></li>
+  <li><a href="#sec-colab" id="toc-sec-colab" class="nav-link" data-scroll-target="#sec-colab"><span class="header-section-number">3.7</span> Entorno para el manejo de recursos computacionales en Ciencia de Datos</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Probabilidad.html">Preliminares</a></li><li class="breadcrumb-item"><a href="./Estadistica.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align: justify">
+<p>La estadística, como campo del conocimiento, tiene su origen en las civilizaciones antiguas que utilizaban técnicas rudimentarias para llevar registros de personas, bienes y otros recursos. Las primeras formas de estadística se pueden rastrear hasta el antiguo Egipto y Mesopotamia, donde se empleaban métodos básicos para el censo y la administración de recursos.</p>
+<p>El término “estadística” proviene del latín “status”, que significa “estado” o “condición”. Aunque la estadística como disciplina tiene sus raíces en el trabajo de varios eruditos, fue el alemán Gottfried Achenwall quien acuñó el término “estadística” en el siglo XVIII. Según Achenwall en <span class="citation" data-cites="putter1750elementa">(<a href="references.html#ref-putter1750elementa" role="doc-biblioref">Pütter y Achenwall 1750</a>)</span> utilizó la palabra “Statistik” donde definió la estadística como el estudio sistemático de datos sobre el estado (entendido como el Estado o gobierno), centrado en la recopilación y análisis de datos sobre las condiciones económicas, sociales y políticas.</p>
+<p>En esta sección se presentan conceptos fundamentales de la estadística, comenzando con las medidas de tendencia central, dispersión y localización, interpretadas a través del valor esperado de una variable aleatoria. Estos conceptos, esenciales para describir el comportamiento de una distribución, serán posteriormente estimados mediante el análisis de muestras.</p>
+</div>
+<!-- ::: {#def-población style="text-align: justify"} -->
+<!-- Una población consta de la totalidad de las observaciones en las que estamos interesados. -->
+<!-- ::: -->
+<!-- En el campo de la inferencia estadística, el estadístico se interesa en llegar a conclusiones respecto a una población, cuando es imposible o poco práctico conocer todo el conjunto de observaciones que la constituyen. -->
+<!-- Por lo tanto, debemos depender de un subconjunto de observaciones de la población que nos ayude a realizar inferencias respecto a ella. Esto nos lleva a considerar el concepto de muestreo. -->
+<p>En estadística, una <strong>población</strong> se refiere al conjunto completo de observaciones que son de interés para un estudio o investigación. Sin embargo, en muchos casos, es imposible o poco práctico obtener datos de cada elemento de la población. Lo que lleva a definir el concepto de una <strong>muestra</strong>.</p>
+<div id="def-muestra" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.1 (Muestra)</strong></span> Una muestra es una porción o subconjunto de una población que se selecciona para ser estudiada, con el objetivo de obtener información o realizar inferencias sobre toda la población.</p>
+<p>Una muestra puede ser seleccionada de forma aleatoria o no aleatoria. En una muestra aleatoria, todos los elementos de la población tienen la misma probabilidad de ser elegidos. En cambio, en una muestra no aleatoria, algunos elementos pueden no tener posibilidad de ser incluidos.</p>
+</div>
+<section id="muestra-aleatoria" class="level4" style="text-align: justify" data-number="3.0.0.1">
+<h4 data-number="3.0.0.1" class="anchored" data-anchor-id="muestra-aleatoria"><span class="header-section-number">3.0.0.1</span> Muestra aleatoria</h4>
+<p>Sean <span class="math inline">\(X_1,\dots, X_n\)</span> variables aleatorias independientes, cada una con la misma distribución de probabilidad conjunta <span class="math inline">\(f(x)\)</span>. Entonces se define <span class="math inline">\(X_1,\dots, X_n\)</span> como una muestra aleatoria con su distribución de probabilidad conjunta como</p>
+<p><span class="math display">\[
+f(x_1,x_2,\cdot, x_n) = f(x_1)f(x_2) \dots f(x_n)
+\]</span></p>
+</section>
+<p>Las técnicas para generalizar desde una muestra hasta una población se congregan dentro de la rama de la disciplina llamada <strong>estadística inferencial</strong>.</p>
+<p>Para que las inferencias que hacemos sobre una población a partir de una muestra sean válidas, es crucial que la muestra sea representativa de esa población. El <strong>sesgo</strong> en una muestra ocurre cuando ésta no refleja adecuadamente las características del conjunto total, lo que puede llevar a conclusiones incorrectas. Para evitar este problema, es esencial seleccionar una muestra aleatoria, ya que este método garantiza que todos los elementos de la población tengan la misma probabilidad de ser elegidos, asegurando la independencia de las observaciones y minimizando el riesgo de sesgo.</p>
+<div id="def-estadístico" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.2 (Estadístico)</strong></span> Un estadístico es cualquier cantidad cuyo valor puede ser calculado a partir de datos muestrales. Antes de obtener los datos, existe incertidumbre sobre qué valor de cualquier estadístico particular resultará. Por consiguiente, un estadístico es una variable aleatoria y será denotada por una letra mayúscula; se utiliza una letra minúscula para representar el valor calculado u observado del estadístico.</p>
+</div>
+<p>Por ejemplo, la media muestral, considerada como estadístico (antes de seleccionar una muestra o realizar un experimento), está denotada por <span class="math inline">\(\bar{X}\)</span>; el valor calculado de este estadístico es <span class="math inline">\(\mu\)</span>. <!-- Del mismo modo, S representa la desviación estándar muestral considerada como estadístico y su valor calculado es s. --></p>
+<p>El propósito al seleccionar muestras aleatorias consiste en obtener información acerca de los parámetros desconocidos de la población. A partir de estas muestras aleatorias se obtiene un único valor que sirve como una estimación puntual. Se denotará este <strong>parámetro puntual</strong> con la letra griega <span class="math inline">\(\theta\)</span>.</p>
+<!-- El objetivo de la estimación puntual es obtener, a partir de muestras aleatorias, un único valor que sirva como una estimación razonable del parámetro $\theta$. Se denotará este parámetro desconocido con la letra griega $\theta$. -->
+<section id="medidas-de-tendencia-central" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="medidas-de-tendencia-central"><span class="header-section-number">3.1</span> Medidas de tendencia central</h2>
+<div id="def-media" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.3 (Media)</strong></span> Sea <span class="math inline">\(X\)</span> una <a href="./Probabilidad.html#sec-VAD">variable aleatoria discreta</a> con distribución de probabilidad <span class="math inline">\(f_X(x)\)</span>. La media o valor esperado de <span class="math inline">\(X\)</span>, se denota por <span class="math inline">\(\mu\)</span> o <span class="math inline">\(E[X]\)</span>, y se define como, <span class="math display">\[\mu = E[X] = \sum x_i f_x (x_i). \]</span> Con función de probabilidad <span class="math inline">\(f_X(x_i)\)</span> .</p>
+<p>Para una variable aleatoria continua <span class="math inline">\(X\)</span>, con función de densidad <span class="math inline">\(f(x)\)</span>, se define como, <span class="math display">\[\mu = \mathrm E[X]=\int_{-\infty}^\infty x f(x)dx .\]</span></p>
+</div>
+<div id="def-cuantil" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.4 (Cuantil)</strong></span> Para una variable aleatoria <span class="math inline">\(X\)</span>, o su distribución acumulada correspondiente, se denomina cuantil <span class="math inline">\(q-\text{ésimo}\)</span>, simbolizado como <span class="math inline">\(\xi_q\)</span>, al valor mínimo <span class="math inline">\(\xi\)</span> que satisface la condición <span class="math inline">\(F_x(\xi_q) \geq q\)</span>.</p>
+</div>
+<div id="def-mediana" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.5 (Mediana)</strong></span> La mediana de una variable aleatoria <span class="math inline">\(X\)</span>, notada como <span class="math inline">\(\text{med}_X\)</span> o <span class="math inline">\(\xi_{0.5}\)</span> , corresponde al cuantil <span class="math inline">\(0.5\)</span>.</p>
+</div>
+<div id="exm-IM" class="theorem example" style="text-align: justify">
+<p><span class="theorem-title"><strong>Ejemplo 3.1</strong></span> &nbsp;</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Ingresos mensuales</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Un investigador analiza los ingresos mensuales (en miles de dólares) de una población: <span class="math inline">\(X=\{2,3,3,4,5,8,10,12,15,18\}\)</span>.</p>
+<p>La media es el promedio de los datos:</p>
+<p><span class="math display">\[\mu  = \dfrac{2 + 3 + 3 + 4 + 5 + 8 + 10 +12 + 15 + 18}{10} = \dfrac{80}{10} = 8.\]</span> El ingreso promedio de la población es 8 mil dólares mensuales.</p>
+<p>La mediana se determina ordenando los datos de menor a mayor. En el caso de un conjunto con un número par de elementos <span class="math inline">\((N=10)\)</span>, se calcula como el promedio de los dos valores centrales.</p>
+<p><span class="math display">\[\text{Mediana} = \dfrac{5 + 8}{2} \ \ = \ \ 6.5.\]</span></p>
+<p>El ingreso central en la población es <span class="math inline">\(6.5\)</span> mil dólares.</p>
+</div>
+</div>
+</div>
+</div>
+<div style="text-align: justify">
+<p>Mediante el muestreo, se busca obtener algunos estimadores de ciertos estadísticos poblacionales, como la media y la varianza, a través de la media muestral y la varianza muestral. Estos estimadores se calculan a partir de los datos de una muestra y sirven para hacer inferencias sobre la población.</p>
+</div>
+<div id="def-mediam" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.6 (Media muestral)</strong></span> Sean <span class="math inline">\(x_1,x_2, \dots, x_n\)</span> muestras aleatorias. Se define la media muestral como,</p>
+<p><span class="math display">\[ \bar{X}  =\frac{1}{n}\sum_{i=1}^n x_i. \]</span></p>
+</div>
+<div id="def-medianam" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.7 (Mediana muestral)</strong></span> Sea <span class="math inline">\(X\)</span> una muestra aleatoria de tamaño <span class="math inline">\(n\)</span> y <span class="math inline">\(x_i\)</span> los valores de los datos ordenados de menor a mayor. La mediana <span class="math inline">\(\tilde{x}\)</span> es el valor que satisface: <span id="eq-medianam"><span class="math display">\[
+\tilde{x}= \begin{cases} x_{\frac {(n+1)}{2}} &amp; \text{ si } n \text{ es par}  ,\\ \frac{1}{2} \left(x_{\frac{n}{2}} +  x_{\frac{n}{2} +1} \right)  &amp; \text{ si } n \text{ es impar}
+  \end{cases}.
+\tag{3.1}\]</span></span></p>
+</div>
+<div id="exm-IMA" class="theorem example" style="text-align: justify">
+<p><span class="theorem-title"><strong>Ejemplo 3.2</strong></span> &nbsp;</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Selección de una muestra aleatoria</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Al selecciona una muestra aleatoria de 5 elementos: <span class="math inline">\(X_\text{muestra} = \{ 3,5,8,10,15 \}.\)</span></p>
+<p>La media muestral se calcula como:</p>
+<p><span class="math display">\[\bar{X} = \frac{3 + 5 + 8 + 10 + 15 }{5} = \frac{41}{5} = 8.2. \]</span></p>
+<p>El ingreso promedio estimado para esta muestra es <span class="math inline">\(8.2\)</span> mil dólares.</p>
+<p>La mediana de la muestra se encuentra directamente porque hay un número impar de elementos <span class="math inline">\((n = 5).\)</span></p>
+<p><span class="math inline">\(\text{Mediana muestral} = 8\)</span>.</p>
+<p>El ingreso central es 8 mil dólares.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="medidas-de-localización" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="medidas-de-localización"><span class="header-section-number">3.2</span> Medidas de localización</h2>
+<div style="text-align: justify">
+<p>La varianza de una variable aleatoria es una medida de dispersión que refleja, en promedio, qué tan alejados están los valores de la variable respecto a su media.</p>
+</div>
+<div id="def-vari" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.8 (Varianza)</strong></span> La varianza de una variable aleatoria <span class="math inline">\(X\)</span>, se denota por <span class="math inline">\(\mathrm{Var}(X)\)</span> o <span class="math inline">\(\sigma_x^2\)</span>, se define como la siguiente esperanza, si está existe, <span class="math display">\[ \mathrm{Var}[X]=  (E[X]-E[X])^2.\]</span></p>
+<p>Cuando <span class="math inline">\(X\)</span> es una variable aleatoria discreta con función de probabilidad <span class="math inline">\(f(x)\)</span> y esperanza finita <span class="math inline">\(\mu\)</span>, entonces la varianza se define por, <span class="math display">\[ \mathrm{Var}[X]=  \sum_i (x_i - \mu)^2.\]</span></p>
+<p>Si <span class="math inline">\(X\)</span> es una variable aleatoria absolutamente continua con función de probabilidad <span class="math inline">\(f(x)\)</span> y esperanza finita <span class="math inline">\(\mu\)</span>, entonces la varianza se define para los puntos <span class="math inline">\(x= \{x_1,x_2,\dots x_n\}\)</span> por,</p>
+<p><span class="math display">\[\mathrm{Var}[X]= \int_{-\infty}^\infty (x-\mu)^2 f(x) dx.\]</span></p>
+</div>
+<div class="proof remark">
+<p><span class="proof-title"><em>Observación</em>. </span>Para calcular la varianza se necesita conocer primero la esperanza.</p>
+</div>
+<div style="text-align: justify">
+<p>El siguiente teorema presenta algunas propiedades que cumple la varianza.</p>
+</div>
+<!-- A continuación se presentan algunas propiedades de la varianza. -->
+<div id="thm-varianza" class="theorem" style="text-align: justify">
+<p><span class="theorem-title"><strong>Teorema 3.1</strong></span> Sean <span class="math inline">\(X\)</span> una variable aleatoria con varianza finita, y sea <span class="math inline">\(c \in \mathbb{R}\)</span> . Entonces:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathrm{Var}[X] \geq 0.\)</span></li>
+<li><span class="math inline">\(\mathrm{Var}[c] = 0.\)</span></li>
+<li><span class="math inline">\(\mathrm{Var}[cX] = c^2 \mathrm{Var}[X].\)</span></li>
+<li><span class="math inline">\(\mathrm{Var}[X+c] =  \mathrm{Var}[X].\)</span></li>
+<li><span class="math inline">\(\mathrm{Var}[X] = 0 \ \ \text{si y solo si} \ \ P(X= E[X])=1 .\)</span></li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Prueba</em>. </span>Ver <span class="citation" data-cites="castaneda2012introduction">(<a href="references.html#ref-castaneda2012introduction" role="doc-biblioref">Castañeda, Arunachalam, y Dharmaraja 2012</a>)</span>.</p>
+</div>
+<div id="def-sd" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.9 (Desviación estándar)</strong></span> A la raíz cuadrada positiva de <span class="math inline">\(\mathrm{Var}[X]\)</span> se le llama desviación estándar, y se le denota naturalmente por <span class="math inline">\(\sigma_X\)</span> o por <span class="math inline">\(+ \sqrt{\mathrm{Var}[X]}\)</span>.</p>
+</div>
+<!-- ::: {#def-sd style="text-align: justify"} -->
+<!-- #### Desviación estándar -->
+<!-- La desviación estándar de una variable aleatoria es una medida de dispersión que indica la cantidad promedio en que los valores de la variable aleatoria difieren de su media. Si $X$ es una variable aleatoria, la desviación estándar de $X$, denotada por $\sigma$, se define como $\sigma = +\sqrt{\mathrm{Var}[X]}$. -->
+<div style="text-align: justify">
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Análisis de Rentabilidades Anuales</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Un analista financiero estudia las rentabilidades anuales de una acción dadas en porcentaje para una población:</p>
+<p><span class="math inline">\(X= \{ 2, 4, 6, 8, 10 \}\)</span></p>
+<p>La media poblacional es:</p>
+<p><span class="math display">\[\mu = \dfrac{ 2 + 4 + 6 + 8 + 10 }{ 5 } = 6.\]</span></p>
+<p>Diferencias respecto a la media:</p>
+<p><span class="math inline">\((2-6)^2 = 16, \ \  (4-6)^2 = 4, \ \  (6-6)^2 = 0, \ \  (8-6)^2 = 4, \ \ (10-6)^2 = 16.\)</span></p>
+<p>Por lo tanto, la varianza esta dada por,</p>
+<p><span class="math display">\[ \sigma^2 = \dfrac{16 + 4 + 0 + 4 + 16   }{5} = \dfrac{40}{5} = 8. \]</span> La varianza poblacional de las rentabilidades es <span class="math inline">\(8\)</span>, lo que indica una dispersión moderada respecto a la media.</p>
+<p>La desviación estándar es,</p>
+<p><span class="math display">\[
+\sigma \ \ = \ \ \sqrt{8}  \ \  \thickapprox \ \ 2.83.
+\]</span> La desviación estándar indica que, en promedio, las rentabilidades se desvían <span class="math inline">\(2.83\)</span> puntos porcentuales de la media.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="def-varianzam" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.10 (Varianza muestral)</strong></span> Sean <span class="math inline">\(X_1,X_2, \dots, X_n\)</span> muestras aleatorias. Se define la varianza muestral para <span class="math inline">\(n&gt;1\)</span>, <span class="math display">\[ S_n^2=S^2=\frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2   .\]</span></p>
+</div>
+<div class="proof remark" style="text-align: justify">
+<p><span class="proof-title"><em>Observación</em>. </span>La media y la varianza muestral tienen la característica de ser estimadores insesgados para la media y la varianza, respectivamente, de una distribución cualquiera.</p>
+</div>
+<div id="def-sdm" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.11 (Desviación estándar muestral)</strong></span> La desviación estándar muestral es la raíz cuadrada de la varianza muestral. Y se denota por <span class="math display">\[s = \sqrt{s_n^2}. \]</span></p>
+</div>
+<div class="proof remark" style="text-align: justify">
+<p><span class="proof-title"><em>Observación</em>. </span>La varianza muestral es un estimador insesgado de la varianza, ya que su valor esperado coincide con la varianza. Sin embargo, la desviación estándar muestral no es un estimador insesgado de la desviación estándar poblacional. Aunque se calcula a partir de un estimador insesgado (la varianza muestral), al tomar la raíz cuadrada se introduce un sesgo, especialmente notable en muestras pequeñas. Existen métodos adicionales para corregir parcialmente este sesgo en la desviación estándar, pero suelen ser más complejos y dependen del tamaño de la muestra.</p>
+</div>
+<div style="text-align: justify">
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Análisis de Rentabilidades Anuales</strong>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Al seccionar una muestra aleatoria de rentabilidades:</p>
+<p><span class="math inline">\(X_\text{muestra} = \{4,6,10 \}.\)</span> La media muestral es: <span class="math display">\[\bar{X} = \dfrac{4 + 6 + 10}{3} =  6.67.\]</span></p>
+<p>Diferencias respecto a la media: <span class="math display">\[(4- 6.67)^2 = 7.11, \ \ (6- 6.67)^2 = 0.44, \ \ (10- 6.67)^2 \thickapprox  11.11.\]</span></p>
+<p>La varianza muestral,</p>
+<p><span class="math display">\[s^2 = \dfrac{7.11 + 0.44 + 11.11 }{ 2} =  \frac{18.66 }{2} \thickapprox 9.33 .\]</span></p>
+<p>La desviación estándar muestral es,</p>
+<p><span class="math display">\[ s = \sqrt{9.33} \thickapprox 3.05 .\]</span></p>
+<p>Las rentabilidades de la muestra se desvían en promedio 3.05 puntos porcentuales de la media muestral.</p>
+</div>
+</div>
+</div>
+</div>
+<div style="text-align: justify">
+<p>La distribución empírica es una representación de los datos observados en la muestra, organizada para mostrar cómo se distribuyen los valores de una variable en dicha muestra. Esta distribución se basa exclusivamente en los datos reales recopilados, sin asumir ningún modelo teórico o de probabilidad. Es una forma de visualizar cómo se comportan los datos en la muestra y ayuda a calcular los estimadores muestrales.</p>
+<p>Sin embargo, los estimadores muestrales no son valores fijos; varían de una muestra a otra. La distribución muestral de un estadístico (como la media muestral o la varianza muestral) describe cómo se distribuyen los valores del estadístico en múltiples muestras extraídas de la misma población. Esta distribución muestral depende de varios factores, como la distribución de la población, el tamaño de las muestras y el método de selección de las muestras.</p>
+<!-- Un estimador es una regla o fórmula que se aplica a los datos de una muestra para calcular una aproximación o estimación del valor de un parámetro poblacional. -->
+<p>Los estimadores muestrales permiten inferir información sobre la población basándonos en la muestra, y a continuación se presentan los principales estimadores muestrales como la media muestral y la varianza muestral, que son ejemplos claves en la estimación de parámetros poblacionales.</p>
+</div>
+<!-- La distribución empírica es una representación de los datos observados en una muestra, organizada para mostrar cómo se distribuyen los valores de una variable en dicha muestra. Esta distribución se basa exclusivamente en los datos reales recopilados, sin asumir ningún modelo teórico o de probabilidad. -->
+<!-- La distribución muestral de un estadístico depende de la distribución de la población, del tamaño de las muestras y del método de selección de las muestras. -->
+<!-- Un estimador es una regla o fórmula que se aplica a los datos de una muestra para calcular una estimación del valor de un parámetro poblacional. Los estimadores permiten inferir información sobre la población basándonos en la muestra. A continuación se presentan los principales estimadores muestrales. -->
+</section>
+<section id="medidas-de-dispersión-de-una-muestra" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="medidas-de-dispersión-de-una-muestra"><span class="header-section-number">3.3</span> Medidas de dispersión de una muestra</h2>
+<section id="rango-muestral." class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="rango-muestral."><span class="header-section-number">3.3.1</span> Rango muestral.</h3>
+<div style="text-align: justify">
+<p>Sea <span class="math inline">\(X\)</span> una variable aleatoria y <span class="math inline">\(x_1 , \dots , x_n\)</span> una muestra de los valores observados de <span class="math inline">\(X\)</span>, el rango muestral <span class="math inline">\(R\)</span> se define como: <span class="math display">\[
+R = x_\mathrm{max} - x_\mathrm{min},
+\]</span> donde <span class="math inline">\(x_\mathrm{max}\)</span> es el valor máximo de la muestra y <span class="math inline">\(x_\mathrm{min}\)</span> es el valor mínimo.</p>
+</div>
+<!-- -->
+<!-- Observación. La mediana muestral también es una medida de localización que indica el valor central -->
+<!-- de la muestra. . -->
+<!-- ::: -->
+<div style="text-align: justify">
+<p>Los datos multivariados se refieren a conjuntos de datos que incluyen más de una variable aleatoria. Por ello, se definen a continuación algunas propiedades que relacionan dos o mas variables aleatorias.</p>
+</div>
+<p>La covarianza, <span class="math inline">\(\gamma_{XY}\)</span>, y la correlación, <span class="math inline">\(\rho_{XY}\)</span>, son parámetros que miden la relación lineal entre dos variables. Se definen a continuación.</p>
+<div id="def-cov" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.12 (Covarianza)</strong></span> Para dos variables aleatorias <span class="math inline">\(X\)</span> y <span class="math inline">\(Y\)</span> con medias <span class="math inline">\(\mu_X = E[X]\)</span> y <span class="math inline">\(\mu_Y= E[Y]\)</span>, la covarianza de <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> se denota por <span class="math inline">\(\mathrm{Cov}[X,Y]\)</span>, se define como: <span id="eq-varianza"><span class="math display">\[
+\gamma_{XY}=\mathrm E[(X-\mu_X)(Y-\mu_Y)].
+\tag{3.2}\]</span></span> siempre que las esperanzas <span class="math inline">\(E[X]\)</span>, <span class="math inline">\(E[Y]\)</span> y <span class="math inline">\(E[XY]\)</span> son finitas.</p>
+</div>
+</section>
+</section>
+<section id="sec-correlacion" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="sec-correlacion"><span class="header-section-number">3.4</span> Correlación</h2>
+<div style="text-align: justify">
+<p>Para dos variables aleatorias <span class="math inline">\(X\)</span> y <span class="math inline">\(Y\)</span>, la covarianza de notada por <span class="math inline">\(\rho_{XY}\)</span> se define por, <span id="eq-correlacion"><span class="math display">\[
+\rho_{XY} = \dfrac{\gamma_{XY}}{\sigma_X \sigma_Y}.
+\tag{3.3}\]</span></span> donde es la a covarianza entre <span class="math inline">\(X\)</span> y <span class="math inline">\(Y\)</span> definido en (<a href="#eq-varianza" class="quarto-xref"><span>3.2</span></a>), <span class="math inline">\(\sigma_X\)</span> es la desviación estándar de la variable <span class="math inline">\(X\)</span> y <span class="math inline">\(\sigma_Y\)</span> desviación estándar de la variable <span class="math inline">\(Y\)</span>.</p>
+</div>
+<p>La covarianza es el valor esperado o promedio teórico del producto cruzado. Representa cómo dos variables se relacionan. Sin embargo, interpretar su magnitud puede es complicado, ya que la covarianza depende de las unidades de las variables involucradas.</p>
+<p>Para hacer la interpretación más sencilla, se utiliza la correlación, que es una versión estandarizada de la covarianza. El coeficiente de correlación tiene la ventaja de ser adimensional y siempre toma valores <span class="math inline">\(-1 \leq \rho_{XY} \leq 1,\)</span> independientemente de las unidades de las variables. Esto facilita la comparación y comprensión de la relación entre dos variables aleatorias <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span>.</p>
+<!-- 
+
+La estadística de muestra utilizada para estimar $\rho_{XY}$ en base a una muestra aleatoria de datos bivariados, $( x_i, y_i )$ para $i= 1,\dots,n$ es el coeficiente de correlación de muestra o también es llamado coeficiente de correlación de producto-momento de Pearson. Dado un conjunto de datos bivariados, el coeficiente de correlación de muestra, $r_{XY}$ , se define por -->
+<div id="def-coefc" class="theorem definition" style="text-align: justify">
+<p><span class="theorem-title"><strong>Definición 3.13 (Coeficiente de correlación)</strong></span> Dado un conjunto de datos bivariados, el coeficiente de correlación de muestra, denotado por <span class="math inline">\(r_{XY},\)</span> se define por,</p>
+<p><span id="eq-cefcorrelacion"><span class="math display">\[
+r_{XY} = \frac{ \sum_{i=1}^{n} (X_i - \overline{X})(Y_i - \overline{Y}) }{\sqrt{\sum_{i=1}^{n} (X_i - \overline{X})^2} \cdot \sqrt{\sum_{i=1}^{n} (Y_i - \overline{Y})^2}} \ \ .
+\tag{3.4}\]</span></span></p>
+<p>Los valores de <span class="math inline">\(r_{X,Y}\)</span> comparten la propiedad con el coeficiente de correlación de población, <span class="math inline">\(-1 \leq r_{XY} \leq 1.\)</span></p>
+</div>
+<div style="text-align: justify">
+<p>La correlación puede ser positiva, negativa o nula:</p>
+<ul>
+<li><p>Correlación positiva: A medida que una variable aumenta, la otra variable también tiende a aumentar.</p></li>
+<li><p>Correlación negativa: A medida que una variable aumenta, la otra variable tiende a disminuir.</p></li>
+<li><p>Correlación nula: No hay una relación lineal evidente entre las dos variables.</p></li>
+</ul>
+<p>Un diagrama de dispersión es una representación gráfica en la que pares ordenados se muestran como puntos en un plano cartesiano <span class="math inline">\((x_1,y_2),(x_2,y_2),\dots, (x_n,x_n).\)</span> La <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> ilustra varios ejemplos de diagramas de dispersión para diferentes pares de variables. En la <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> a) se observa una fuerte correlación lineal positiva entre a medida que aumenta, tiende a aumentar también, y viceversa.</p>
+<p>Los datos de la <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> a) sugieren una correlación positiva moderada entre <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span>, similar a la relación observada en la <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> a). Sin embargo, a diferencia de la correlación más fuerte en la <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> a), en este caso, para un valor dado de <span class="math inline">\(x\)</span>, existe una mayor dispersión en los valores plausibles de <span class="math inline">\(y\)</span>, lo que indica que la relación entre las variables es menos predecible y presenta mayor variabilidad.</p>
+<p>A diferencia de las <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> a) y <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> b), la <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> c) presenta un ejemplo de una correlación negativa notablemente fuerte, donde los valores altos de <span class="math inline">\(X\)</span> se asocian con valores bajos de <span class="math inline">\(Y\)</span>, y viceversa. Se observa que la mayoría de los puntos se encuentran en los cuadrantes superior izquierdo e inferior derecho, lo que refuerza la relación inversa entre ambas variables. La <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> d) muestra un ejemplo en el que no parece haber correlación detectable entre <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span>.</p>
+<p>La <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> e) muestra un ejemplo de una relación lineal positiva, donde todos los puntos se alinean exactamente sobre una línea recta. Por último, la <a href="#fig-correlacion" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> f) presenta una situación distinta en la que existe una relación entre <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span>, pero no es lineal. En este caso, los valores de Y tienden a ser altos cuando los valores de <span class="math inline">\(X\)</span> son extremos, ya sea muy bajos o muy altos. Sin embargo, para valores de X cercanos al centro del rango (es decir, alrededor de cero), los valores de Y tienden a ser bajos.</p>
+</div>
+<div class="cell">
+<div id="fig-correlacion" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-correlacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="fig-correlacion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-correlacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Estadistica_files/figure-html/fig-correlacion-1.png" class="img-fluid figure-img" data-ref-parent="fig-correlacion" width="1152">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-correlacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) (a) X e Y correlacionados positivamente
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-correlacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3.1: (a)-(f) son diagramas de dispersión con una variedad de estructuras de correlación.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="estandarización" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="estandarización"><span class="header-section-number">3.5</span> Estandarización</h2>
+<div style="text-align: justify">
+<p>La estandarización de datos en estadística es un proceso esencial para comparar y analizar datos provenientes de diferentes fuentes o escalas. Este procedimiento transforma los datos a una escala común sin distorsionar las diferencias en los rangos de valores. La estandarización de una variable aleatoria es el proceso de transformar una variable aleatoria <span class="math inline">\(X\)</span> con media <span class="math inline">\(\mu\)</span> y desviación estándar <span class="math inline">\(\sigma\)</span> en una nueva variable aleatoria <span class="math inline">\(Z\)</span> que tenga una media de 0 y una desviación estándar de 1. El proceso de estandarización se realiza utilizando la siguiente fórmula:</p>
+<p><span id="eq-estandar"><span class="math display">\[ Z =  \dfrac{X - \mu}{\sigma} . \tag{3.5}\]</span></span></p>
+<p>El proceso usando (<a href="#eq-estandar" class="quarto-xref"><span>3.5</span></a>) es particularmente útil en varias aplicaciones estadísticas y de aprendizaje automático. En el ámbito del aprendizaje automático, existen algoritmos de clasificación y de regresión donde asumen que los datos están estandarizados. Esto es importante porque la mayoría de estos algoritmos utilizan distancias euclidianas entre puntos en su procesamiento. Si los datos no están estandarizados, las características con escalas más grandes pueden dominar la medida de distancia y, en consecuencia, podría negativamente el rendimiento del modelo.</p>
+</div>
+</section>
+<section id="normalización" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="normalización"><span class="header-section-number">3.6</span> Normalización</h2>
+<div style="text-align: justify">
+<p>La normalización de datos en estadística es un proceso que ajusta los valores de diferentes variables a una escala común, facilitando la comparación directa y el análisis adecuado. Este procedimiento es relevante cuando se trabaja con datos que tienen diferentes unidades o rangos, ya que permite que todas las variables contribuyan equitativamente en análisis y modelos estadísticos.</p>
+<p>Existen varios métodos de normalización, pero uno de los más comunes es la normalización min-max. Este método transforma los valores de una variable para que se ubiquen dentro de un rango específico, típicamente entre 0 y 1. La fórmula para la normalización min-max es la siguiente:</p>
+<p><span id="eq-minma"><span class="math display">\[ X_i^\prime = \dfrac{X_i- X_{min}}{X_{\max} - X_{\min}}, \ \ \ \ \ \ \ \  i=1,...,n. \tag{3.6}\]</span></span></p>
+<p>La normalización min-max en (<a href="#eq-minma" class="quarto-xref"><span>3.6</span></a>) es útil en aplicaciones donde se necesita preservar las relaciones entre los valores originales, como en algoritmos de aprendizaje automático que utilizan distancias entre datos. Otro método de normalización es la normalización z-score, también conocida como estandarización.</p>
+</div>
+</section>
+<section id="sec-colab" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="sec-colab"><span class="header-section-number">3.7</span> Entorno para el manejo de recursos computacionales en Ciencia de Datos</h2>
+<div style="text-align: justify">
+<p>La computación en la nube es un entorno basado en servicios de internet que permite acceder a software, datos y servicios desde cualquier lugar, siempre se tenga un dispositivo con conexión a la web. Debido a los altos recursos que ofrece el uso de esta tecnología, destaca en particular <strong>Google Colab</strong>.</p>
+<p>Google Colab, también conocido como Colaboratory, es un entorno gratuito basado en Jupyter Notebook que se ejecuta en los servidores de Google en la nube. No requiere instalación ni configuración de Python. Además, ofrece acceso gratuito a hardware como CPU, GPU y TPU. El código se puede compartir de manera similar a Google Drive.</p>
+<div id="fig-colab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-colab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="google-colaboratory.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="238">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-colab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3.2: Google Colab
+</figcaption>
+</figure>
+</div>
+<p>Para acceder a Google Colab, ingresa a <a href="https://colab.research.google.com/" class="uri">https://colab.research.google.com/</a> con una cuenta de gmail.</p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-castaneda2012introduction" class="csl-entry" role="listitem">
+Castañeda, Liliana Blanco, Viswanathan Arunachalam, y Selvamuthu Dharmaraja. 2012. <em>Introduction to probability and stochastic processes with applications</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-putter1750elementa" class="csl-entry" role="listitem">
+Pütter, Johann Stephan, y Gottfried Achenwall. 1750. <em>Elementa iuris naturae</em>. Schmidt.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = true;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Probabilidad.html" class="pagination-link" aria-label="Nociones basicas de Probabilidad">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Nociones basicas de Probabilidad</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./series.html" class="pagination-link" aria-label="Series de tiempo">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,9 @@
+---
+lang: es
+---
+
+# Propuestas {.unnumbered}
+
+::: {style="text-align: justify"}
+Una posible extensión de este trabajo es considerar para los pronósticos, otro modelos mas sofisticados de redes neuronales como la combinación de una red neuronal convolucional con una red neuronal con memoria a corto y largo plazo (LSTM) que seria un modelo híbrido. Así como implementar un modelo VAR (Vector AutoRegresivo) que es una extensión de los modelos autoregresivos univariados para analizar múltiples series de tiempo simultáneamente. Esto permitiría entrenar el modelo utilizando las 5 variables de estudio y poder hacer un pronostico múltiple. De poder ser implementado sería de mayor utilidad para el área geográfica que se este estudiando.
+:::

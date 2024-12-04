@@ -1,0 +1,845 @@
+{
+    "sources": [
+        {
+            "author": [
+                {
+                    "family": "Castañeda",
+                    "given": "Liliana Blanco"
+                },
+                {
+                    "family": "Arunachalam",
+                    "given": "Viswanathan"
+                },
+                {
+                    "family": "Dharmaraja",
+                    "given": "Selvamuthu"
+                }
+            ],
+            "id": "castaneda2012introduction",
+            "issued": {
+                "date-parts": [
+                    [
+                        2012
+                    ]
+                ]
+            },
+            "publisher": "John Wiley & Sons",
+            "title": "Introduction to probability and stochastic processes with applications",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Moor",
+                    "given": "James"
+                }
+            ],
+            "container-title": "Ai Magazine",
+            "id": "moor2006dartmouth",
+            "issue": "4",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "page": "87-87",
+            "title": "The dartmouth college artificial intelligence conference: The next fifty years",
+            "title-short": "The dartmouth college artificial intelligence conference",
+            "type": "article-journal",
+            "volume": "27"
+        },
+        {
+            "author": [
+                {
+                    "family": "Casella",
+                    "given": "G"
+                },
+                {
+                    "family": "Berger",
+                    "given": "R"
+                }
+            ],
+            "container-title": "Estados Unidos: Thompson Learning",
+            "id": "casella2002statistical",
+            "issued": {
+                "date-parts": [
+                    [
+                        2002
+                    ]
+                ]
+            },
+            "title": "Statistical inference. 2aed",
+            "type": "article-journal"
+        },
+        {
+            "DOI": "10.1093/comjnl/27.2.97",
+            "ISSN": "0010-4620",
+            "URL": "https://doi.org/10.1093/comjnl/27.2.97",
+            "author": [
+                {
+                    "family": "Knuth",
+                    "given": "Donald E."
+                }
+            ],
+            "container-title": "Comput. J.",
+            "id": "knuth84",
+            "issue": "2",
+            "issued": {
+                "date-parts": [
+                    [
+                        1984,
+                        5
+                    ]
+                ]
+            },
+            "page": "97-111",
+            "publisher": "Oxford University Press, Inc.",
+            "publisher-place": "USA",
+            "title": "Literate programming",
+            "type": "article-journal",
+            "volume": "27"
+        },
+        {
+            "author": [
+                {
+                    "family": "Apicella",
+                    "given": "Andrea"
+                },
+                {
+                    "family": "Donnarumma",
+                    "given": "Francesco"
+                },
+                {
+                    "family": "Isgrò",
+                    "given": "Francesco"
+                },
+                {
+                    "family": "Prevete",
+                    "given": "Roberto"
+                }
+            ],
+            "container-title": "Neural Networks",
+            "id": "apicella2021survey",
+            "issued": {
+                "date-parts": [
+                    [
+                        2021
+                    ]
+                ]
+            },
+            "page": "14-32",
+            "publisher": "Elsevier",
+            "title": "A survey on modern trainable activation functions",
+            "type": "article-journal",
+            "volume": "138"
+        },
+        {
+            "author": [
+                {
+                    "family": "Silaparasetty",
+                    "given": "Vinita"
+                }
+            ],
+            "id": "silaparasetty2020deep",
+            "issued": {
+                "date-parts": [
+                    [
+                        2020
+                    ]
+                ]
+            },
+            "publisher": "Springer",
+            "title": "Deep learning projects using TensorFlow 2",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Aggarwal",
+                    "given": "Charu C"
+                },
+                {
+                    "family": "Aggarwal",
+                    "given": "Charu C"
+                }
+            ],
+            "container-title": "Neural networks and deep learning: A textbook",
+            "id": "aggarwal2018introduction",
+            "issued": {
+                "date-parts": [
+                    [
+                        2018
+                    ]
+                ]
+            },
+            "page": "1-52",
+            "publisher": "Springer",
+            "title": "An introduction to neural networks",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Hubel",
+                    "given": "David H"
+                },
+                {
+                    "family": "Wiesel",
+                    "given": "Torsten N"
+                }
+            ],
+            "container-title": "The Journal of physiology",
+            "id": "hubel1959receptive",
+            "issue": "3",
+            "issued": {
+                "date-parts": [
+                    [
+                        1959
+                    ]
+                ]
+            },
+            "page": "574",
+            "publisher": "Wiley-Blackwell",
+            "title": "Receptive fields of single neurones in the cat’s striate cortex",
+            "type": "article-journal",
+            "volume": "148"
+        },
+        {
+            "author": [
+                {
+                    "family": "Rosenblatt",
+                    "given": "Frank"
+                }
+            ],
+            "container-title": "Psychological review",
+            "id": "rosenblatt1958perceptron",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        1958
+                    ]
+                ]
+            },
+            "page": "386",
+            "publisher": "American Psychological Association",
+            "title": "The perceptron: A probabilistic model for information storage and organization in the brain.",
+            "title-short": "The perceptron",
+            "type": "article-journal",
+            "volume": "65"
+        },
+        {
+            "author": [
+                {
+                    "dropping-particle": "da",
+                    "family": "Fontoura Costa",
+                    "given": "Luciano"
+                },
+                {
+                    "family": "Travieso",
+                    "given": "Gonzalo"
+                }
+            ],
+            "id": "da1996fundamentals",
+            "issued": {
+                "date-parts": [
+                    [
+                        1996
+                    ]
+                ]
+            },
+            "publisher": "Elsevier",
+            "title": "Fundamentals of neural networks: By laurene fausett. Prentice-hall, 1994, pp. 461, ISBN 0-13-334186-0",
+            "title-short": "Fundamentals of neural networks",
+            "type": ""
+        },
+        {
+            "author": [
+                {
+                    "family": "Rumelhart",
+                    "given": "David E"
+                },
+                {
+                    "family": "Hinton",
+                    "given": "Geoffrey E"
+                },
+                {
+                    "family": "Williams",
+                    "given": "Ronald J"
+                }
+            ],
+            "container-title": "nature",
+            "id": "rumelhart1986learning",
+            "issue": "6088",
+            "issued": {
+                "date-parts": [
+                    [
+                        1986
+                    ]
+                ]
+            },
+            "page": "533-536",
+            "publisher": "Nature Publishing Group UK London",
+            "title": "Learning representations by back-propagating errors",
+            "type": "article-journal",
+            "volume": "323"
+        },
+        {
+            "author": [
+                {
+                    "family": "Hecht-Nielsen",
+                    "given": "Robert"
+                }
+            ],
+            "container-title": "Wesely Publishing Company. Hornik, K. Stinchcombe, M. White, H.(1989). Multilayer feedforward networks are universal approximators, Neural Networks",
+            "id": "hecht1990neurocomputing",
+            "issue": "359366",
+            "issued": {
+                "date-parts": [
+                    [
+                        1990
+                    ]
+                ]
+            },
+            "page": "3168-3176",
+            "title": "Neurocomputing, addison",
+            "type": "article-journal",
+            "volume": "2"
+        },
+        {
+            "author": [
+                {
+                    "family": "Burkart",
+                    "given": "Nadia"
+                },
+                {
+                    "family": "Huber",
+                    "given": "Marco F"
+                }
+            ],
+            "container-title": "Journal of Artificial Intelligence Research",
+            "id": "burkart2021survey",
+            "issued": {
+                "date-parts": [
+                    [
+                        2021
+                    ]
+                ]
+            },
+            "page": "245-317",
+            "title": "A survey on the explainability of supervised machine learning",
+            "type": "article-journal",
+            "volume": "70"
+        },
+        {
+            "author": [
+                {
+                    "family": "Schmidhuber",
+                    "given": "Jürgen"
+                },
+                {
+                    "family": "Hochreiter",
+                    "given": "Sepp"
+                },
+                {
+                    "literal": "others"
+                }
+            ],
+            "container-title": "Neural Comput",
+            "id": "schmidhuber1997long",
+            "issue": "8",
+            "issued": {
+                "date-parts": [
+                    [
+                        1997
+                    ]
+                ]
+            },
+            "page": "1735-1780",
+            "title": "Long short-term memory",
+            "type": "article-journal",
+            "volume": "9"
+        },
+        {
+            "author": [
+                {
+                    "family": "Olah",
+                    "given": "Christopher"
+                }
+            ],
+            "id": "olah2015understanding",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "title": "Understanding lstm networks",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Zhou"
+                },
+                {
+                    "family": "Chellappa"
+                }
+            ],
+            "container-title": "IEEE 1988 international conference on neural networks",
+            "id": "zhou1988computation",
+            "issued": {
+                "date-parts": [
+                    [
+                        1988
+                    ]
+                ]
+            },
+            "page": "71-78",
+            "publisher": "IEEE",
+            "title": "Computation of optical flow using a neural network",
+            "type": "paper-conference"
+        },
+        {
+            "author": [
+                {
+                    "family": "LeCun",
+                    "given": "Yann"
+                },
+                {
+                    "literal": "others"
+                }
+            ],
+            "container-title": "Connectionism in perspective",
+            "id": "lecun1989generalization",
+            "issue": "143-155",
+            "issued": {
+                "date-parts": [
+                    [
+                        1989
+                    ]
+                ]
+            },
+            "page": "18",
+            "publisher": "North Holland",
+            "title": "Generalization and network design strategies",
+            "type": "article-journal",
+            "volume": "19"
+        },
+        {
+            "author": [
+                {
+                    "family": "Balas",
+                    "given": "Valentina E"
+                },
+                {
+                    "family": "Kumar",
+                    "given": "Raghvendra"
+                },
+                {
+                    "family": "Srivastava",
+                    "given": "Rajshree"
+                },
+                {
+                    "literal": "others"
+                }
+            ],
+            "id": "balas2020recent",
+            "issued": {
+                "date-parts": [
+                    [
+                        2020
+                    ]
+                ]
+            },
+            "publisher": "Springer",
+            "title": "Recent trends and advances in artificial intelligence and internet of things",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Sendiña Nadal",
+                    "given": "Irene"
+                },
+                {
+                    "family": "Pérez Muñuzuri",
+                    "given": "Vicente"
+                }
+            ],
+            "id": "sendina2006fundamentos",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "publisher": "Universidad de Santiago de Compostela",
+            "title": "Fundamentos de meteorologı́a",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "He",
+                    "given": "Kaiming"
+                },
+                {
+                    "family": "Zhang",
+                    "given": "Xiangyu"
+                },
+                {
+                    "family": "Ren",
+                    "given": "Shaoqing"
+                },
+                {
+                    "family": "Sun",
+                    "given": "Jian"
+                }
+            ],
+            "container-title": "Proceedings of the IEEE conference on computer vision and pattern recognition",
+            "id": "he2016deep",
+            "issued": {
+                "date-parts": [
+                    [
+                        2016
+                    ]
+                ]
+            },
+            "page": "770-778",
+            "title": "Deep residual learning for image recognition",
+            "type": "paper-conference"
+        },
+        {
+            "author": [
+                {
+                    "family": "Pütter",
+                    "given": "Johann Stephan"
+                },
+                {
+                    "family": "Achenwall",
+                    "given": "Gottfried"
+                }
+            ],
+            "id": "putter1750elementa",
+            "issued": {
+                "date-parts": [
+                    [
+                        1750
+                    ]
+                ]
+            },
+            "publisher": "Schmidt",
+            "title": "Elementa iuris naturae",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Bowley",
+                    "given": "Arthur Lyon"
+                }
+            ],
+            "collection-number": "8",
+            "id": "bowley1926elements",
+            "issued": {
+                "date-parts": [
+                    [
+                        1926
+                    ]
+                ]
+            },
+            "publisher": "King",
+            "title": "Elements of statistics",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Kolmogorov",
+                    "given": "Andrey"
+                }
+            ],
+            "container-title": "Izvestiya Rossiiskoi Akademii Nauk. Seriya Matematicheskaya",
+            "id": "kolmogorov1941interpolation",
+            "issued": {
+                "date-parts": [
+                    [
+                        1941
+                    ]
+                ]
+            },
+            "page": "3",
+            "title": "Interpolation and extrapolation of stationary random sequences",
+            "type": "article-journal",
+            "volume": "5"
+        },
+        {
+            "author": [
+                {
+                    "family": "Kingma",
+                    "given": "Diederik P"
+                },
+                {
+                    "family": "Ba",
+                    "given": "Jimmy"
+                }
+            ],
+            "container-title": "arXiv preprint arXiv:1412.6980",
+            "id": "kingma2014adam",
+            "issued": {
+                "date-parts": [
+                    [
+                        2014
+                    ]
+                ]
+            },
+            "title": "Adam: A method for stochastic optimization",
+            "title-short": "Adam",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "McCulloch",
+                    "given": "Warren S"
+                },
+                {
+                    "family": "Pitts",
+                    "given": "Walter"
+                }
+            ],
+            "container-title": "The bulletin of mathematical biophysics",
+            "id": "mcculloch1943logical",
+            "issued": {
+                "date-parts": [
+                    [
+                        1943
+                    ]
+                ]
+            },
+            "page": "115-133",
+            "publisher": "Springer",
+            "title": "A logical calculus of the ideas immanent in nervous activity",
+            "type": "article-journal",
+            "volume": "5"
+        },
+        {
+            "author": [
+                {
+                    "family": "Montgomery",
+                    "given": "Douglas C"
+                },
+                {
+                    "family": "Jennings",
+                    "given": "Cheryl L"
+                },
+                {
+                    "family": "Kulahci",
+                    "given": "Murat"
+                }
+            ],
+            "id": "montgomery2015introduction",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "publisher": "John Wiley & Sons",
+            "title": "Introduction to time series analysis and forecasting",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Cryer",
+                    "given": "Jonathan D"
+                },
+                {
+                    "family": "Kellet",
+                    "given": "Natalie"
+                }
+            ],
+            "id": "cryer1991time",
+            "issued": {
+                "date-parts": [
+                    [
+                        1991
+                    ]
+                ]
+            },
+            "publisher": "Springer",
+            "title": "Time series analysis",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Woodward",
+                    "given": "Wayne A"
+                },
+                {
+                    "family": "Sadler",
+                    "given": "Bivin Philip"
+                },
+                {
+                    "family": "Robertson",
+                    "given": "Stephen"
+                }
+            ],
+            "id": "woodward2022time",
+            "issued": {
+                "date-parts": [
+                    [
+                        2022
+                    ]
+                ]
+            },
+            "publisher": "Chapman; Hall/CRC",
+            "title": "Time series for data science: Analysis and forecasting",
+            "title-short": "Time series for data science",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Cryer",
+                    "given": "Jonathan D"
+                }
+            ],
+            "id": "cryer1986time",
+            "issued": {
+                "date-parts": [
+                    [
+                        1986
+                    ]
+                ]
+            },
+            "publisher": "Duxbury Press Boston",
+            "title": "Time series analysis",
+            "type": "book",
+            "volume": "286"
+        },
+        {
+            "author": [
+                {
+                    "family": "Waldmeier",
+                    "given": "Max"
+                }
+            ],
+            "container-title": "Zurich: Schulthess",
+            "id": "waldmeier1961sunspot",
+            "issued": {
+                "date-parts": [
+                    [
+                        1961
+                    ]
+                ]
+            },
+            "title": "The sunspot-activity in the years 1610-1960",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Charles",
+                    "given": "M"
+                },
+                {
+                    "family": "Grinstead",
+                    "given": "J"
+                },
+                {
+                    "family": "Snell",
+                    "given": "L"
+                }
+            ],
+            "container-title": "American Mathematical Society",
+            "id": "charles1997introduction",
+            "issued": {
+                "date-parts": [
+                    [
+                        1997
+                    ]
+                ]
+            },
+            "title": "Introduction to probability",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Ross",
+                    "given": "Sheldon M"
+                }
+            ],
+            "id": "ross2014introduction",
+            "issued": {
+                "date-parts": [
+                    [
+                        2014
+                    ]
+                ]
+            },
+            "publisher": "Academic press",
+            "title": "Introduction to probability models",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Woodward",
+                    "given": "Wayne A"
+                },
+                {
+                    "family": "Gray",
+                    "given": "Henry L"
+                },
+                {
+                    "family": "Elliott",
+                    "given": "Alan C"
+                }
+            ],
+            "id": "woodward2017applied",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017
+                    ]
+                ]
+            },
+            "publisher": "CRC press",
+            "title": "Applied time series analysis with r",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Fierro",
+                    "given": "Ariel Alejandro"
+                }
+            ],
+            "genre": "PhD thesis",
+            "id": "fierro2021prediccion",
+            "issued": {
+                "date-parts": [
+                    [
+                        2021
+                    ]
+                ]
+            },
+            "publisher": "Universidad Nacional de La Plata",
+            "title": "Predicción de series temporales con redes neuronales",
+            "type": "thesis"
+        }
+    ],
+    "project_biblios": [
+        "references.bib"
+    ]
+}

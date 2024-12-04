@@ -1,0 +1,395 @@
+---
+lang: es
+---
+
+# Redes neuronales Biológicas y artificiales
+
+<!-- ##Red neuronal artificial (RNA) -->
+
+## Inspiración Biológica de las Redes neuronales Artificiales
+
+::: {style="text-align: justify"}
+Se parte del estudio de los seres vivos que poseen cerebro uno de los órganos más complejos del cuerpo humano, el cual hace parte de un sistema nervioso central. Funciona como el centro de control de todas nuestras actividades, tanto conscientes como inconscientes, regulando funciones esenciales como la respiración, el ritmo cardíaco y la digestión, así como procesos más complejos como el pensamiento, la memoria y las emociones.
+
+El cerebro está compuesto por miles de millones de células nerviosas llamadas **neuronas**. Una imagen de una neurona real se puede observar en @fig-neu. Estas neuronas se comunican entre sí a través de conexiones especializadas llamadas sinapsis, formando una extensa red de comunicación.
+
+![Imagen de una neurona biologica.](neurona2.jpg){#fig-neu fig-align="center" width="278"}
+
+Cuando una neurona recibe suficientes estímulos de otras neuronas a través de sus dendritas y alcanza un umbral, se dispara un impulso eléctrico conocido como potencial de acción. Este impulso viaja a lo largo del axón de la neurona y provoca la liberación de neurotransmisores en la sinapsis, los cuales estimulan a las neuronas receptoras. La cantidad de información procesada y almacenada depende de los niveles de estímulos recibidos y de la eficiencia de estas conexiones sinápticas esto se puede ver visualmente en la @fig-neuronas. A través de este complejo sistema de señales, el cerebro puede procesar información, aprender de experiencias, tomar decisiones y coordinar acciones.
+
+<!-- Cada neurona recibe señales de otras neuronas a través de sus dendritas y envía señales a través de su axón. La transmisión de señales entre neuronas se realiza mediante impulsos eléctricos y la liberación de neurotransmisores, que son sustancias químicas que facilitan la comunicación entre las células nerviosas. -->
+
+<!-- Las redes neuronales biológicas funcionan mediante un proceso de integración y propagación de información.  -->
+
+<!-- Cuando una neurona recibe suficientes estímulos de otras neuronas,la cantidad de información procesada y almacenada depende de los niveles alcanzando un umbral, el cual dispara un impulso eléctrico, conocido como potencial de acción. Este impulso viaja a lo largo del axón de la neurona y provoca la liberación de neurotransmisores en la sinapsis, que a su vez estimulan a las neuronas receptoras. A través de este complejo sistema de señales, el cerebro puede procesar información, aprender de experiencias, tomar decisiones y coordinar acciones. -->
+
+<!-- En la emulación de dicho sistema neuronal biológico, por medio de un sistema neuronal artificial, se puede establecer una estructura jerárquica similar a la existente en el cerebro. El elemento esencial será la neurona artificial, la cual se organizará en capas. Varias capas constituirán una red neuronal. Finalmente, una red neuronal junto con los interfaces de entrada y salida constituirá el sistema global del proceso. -->
+
+<!-- El elemento básico de un sistema neuronal biológico es la neurona. Un sistema neuronal biológico está compuesto por millones de neuronas organizadas en capas. En la emulación de dicho sistema neuronal biológico, por medio de un sistema neuronal artificial, se puede establecer una estructura jerárquica similar a la existente en el cerebro. El elemento esencial será la neurona artificial, la cual se organizará en capas. Varias capas constituirán una red neuronal. Finalmente, una red neuronal junto con los interfaces de entrada y salida constituirá el sistema global del proceso. -->
+
+![Estructura básica de una neurona biológica.](RN_biologica.png){#fig-neuronas}
+
+La adaptación de la estructura de las redes neuronales biológicas fue fundamental para desarrollar un modelo matemático de neuronas artificiales, introducido en la década de 1940. Warren McCulloch y Walter Pitts [@mcculloch1943logical], en su modelo no solo abarcaba los conceptos básicos de una neurona artificial, sino que también incorporaba la combinación lineal de entradas y la función de activación. Sin embargo, Frank Rosenblatt expandió este concelto de las redes neuronales artificiales con la introducción del perceptrón. En su trabajo [@rosenblatt1958perceptron], describió cómo este tipo de red neuronal podía aprender a clasificar patrones ajustando los pesos de las conexiones neuronales.
+
+En la emulación de dicho sistema neuronal biológico, por medio de un sistema neuronal artificial, se puede establecer una estructura jerárquica similar a la existente en el cerebro. El elemento esencial será la neurona artificial, la cual se organizará en capas. Varias capas constituirán una red neuronal. Finalmente, una red neuronal junto con los interfaces de entrada y salida constituirá el sistema global del proceso.
+:::
+
+## Modelo de red neuronal Artificial
+
+::: {style="text-align: justify"}
+Las Redes Neuronales Artificiales (RNA) son un modelo computacional inspirado en el modelo que componen las redes neuronales biológicas. Consta de un conjunto de unidades, neuronas artificiales interconectadas y permite la transmisión de señales. Estas señales pasan a través de la red neuronal en la que se encuentran después de pasar por diferentes operaciones generan el valor final de salida. Estas redes se distinguen por su capacidad de aprendizaje. Los problemas del mundo real, como la asociación, la evaluación o el reconocimiento de patrones, encuentran una resolución óptima a través de estas redes neuronales, de manera análoga a la efectividad que los seres humanos demuestran al abordar este tipo de razonamiento, clasificación y otros desafíos.
+:::
+
+## Arquitectura de una Red Neuronal Artificial
+
+::: {style="text-align: justify"}
+La arquitectura de una red neuronal artificial se compone de nodos (neurona) que se organizan por capas. Estas capas se interconectan entre sí generando la similitud de la sinápsis que se presenta entre las neuronas biológicas. El comportamiento de ambas redes está determinado por la estructura de conexiones sinápticas. Estas conexiones sinápticas pueden ser direccionales, es decir, la información solamente puede propagarse en un único sentido (desde la neurona presináptica a la pos-sináptica). El conjunto de una o más capas constituye la red neuronal.
+
+Es posible dar una clasificación de estas capas:
+
+**Capa de entrada:** también denominada sensorial, está compuesta por neuronas que reciben datos o señales procedentes del entorno.
+
+**Capas ocultas:** no tiene una conexión directa con el entorno, es decir, no se conecta directamente ni a órganos sensores ni a efectores. Este tipo de capa oculta proporciona grados de libertad a la red neuronal gracias a los cuales es capaz de representar más fehacientemente determinadas características del entorno que trata de modelar.
+
+**Capa de salida:** proporciona la respuesta a las señales de la entrada.
+
+Generalmente, las conexiones son entre neuronas pertenecientes a diferentes capas aunque son posibles las conexiones intercapas o de realimentación, aquellas que no siguen el sentido de entrada-salida sino que están conectadas entre capas anteriores o mismas neuronas de la capa.
+
+Estas capas se pueden observar en la @fig-RNA. La capa de entrada está compuesta por 7 neuronas, representadas en color morado, la cual es seguida de una capa oculta con 4 neuronas mostradas en color salmón. Finalmente, la capa de salida está representada en color rosa.
+:::
+
+![Arquitectura de una RNA.](esquema_rna.jpg){#fig-RNA fig-align="center" width="446"}
+
+## Elementos de una Red Natural Artificial
+
+::: {style="text-align: justify"}
+Dentro de la arquitectura de una RNA se pueden distinguir los siguientes elementos:
+
+En la capa de entrada ingresa el **conjunto de entradas** (datos) $x_j$ que es recibida por la neurona del sistema sensorial externo u otras neuronas con las que tiene conexión. Cada neurona de cualquier capa (o nodo) posee un **peso sináptico** $w_{ij}$, con $j=1, \dotsc , n.$ Este se modifica dependiendo de la información recibida emulando la sinapsis entre las neuronas biológicas.
+
+Cada neurona tiene una **regla de propagación** $h_i$ definida a partir del conjunto de entradas y los pesos sinápticos. Es decir: $$h_i  =  \sum_{i=1}^{n} w_{ij} x_j .$$ Suele ser habitual añadir al conjunto de pesos de la neurona un parámetro adicional $\theta_i$, que se denomina umbral, el cual se acostumbra a restar al potencial pos-sináptico. Es decir: $$h_i =  \sum_{i=1}^{n} w_{ij} x_j - \theta_i .$$
+
+En la @fig-elementos se presenta un modelo de red neuronal artificial que incorpora los componentes fundamentales antes presentados para este modelo.
+
+![Modelo de una neurona artificial.](Elementos_rna.jpg){#fig-elementos fig-align="center"}
+:::
+
+## Funciones de activación
+
+::: {style="text-align: justify"}
+Una **función de activación** es una asignación que establece la relación entre la salida de la capa de entrada y una capa oculta en un Red Neuronal Artificial (RNA) permitiendo a la red aprender. Normalmente los valores de la salida están comprendidos en un rango $(0,1)$ o $(-1,1)$.
+
+Por ejemplo, dada una entrada $(x_i)$ y un conjunto de pesos $(w_i)$, la función de activación toma una combinación lineal de estos (generalmente en forma de $(z = \sum_i w_i x_i + b)$, donde $(b)$ es el sesgo) y aplica una transformación no lineal. Esta transformación permite que la red neuronal aprenda y adopte una capacidad eficaz al modelar los datos.
+
+<!-- La principal ventaja de utilizar una función de activación es que permite a la red neuronal capturar y aprender relaciones no lineales en los datos, lo cual es fundamental para el éxito de las tareas de aprendizaje profundo. -->
+
+<!-- $$ y_i = f(x_i) = f_i \left( \sum_{j=1}^{n} w_{ij} x_j \right).$$ -->
+
+De todas las funciones de activación que hay en la literatura, se van a considerar aquellas que generen menor costo computacional. Algunas de ellas son:
+:::
+
+### ReLU (Rectified Lineal Unit) {#sec-Relu}
+
+::: {style="text-align: justify"}
+La función ReLU transforma los valores introducidos, anulando los valores negativos y dejando los positivos tal y como entran.
+
+$$
+f(x) = \max(0,x) = 
+\left\{
+\begin{array}{ll}
+0 & \text{si } x < 0 \\
+x & \text{si } x \geq 0
+\end{array}
+\right .
+$$
+:::
+
+### Sigmoid (Sigmoide)
+
+::: {style="text-align: justify"}
+La función sigmoide transforma los valores introducidos a una escala (0,1), donde los valores altos tienen de manera asintótica a 1 y mientras que los valores muy bajos lo hacen al valor 0.
+
+$$ f(x)= \dfrac{1}{1- e^{-x}} .$$
+:::
+
+### Tangente hiperbólica (Tangent Hyperbolic )
+
+::: {style="text-align: justify"}
+La función tangente hiperbólica realiza la misma tranformación anterior pero a una escala $(-1,1)$.
+
+$$ f(x) =\dfrac{2}{1+e^{-2x}} -1 .$$
+:::
+
+### Softmax
+
+::: {style="text-align: justify"}
+La función Softmax transforma las salidas a una representación en forma de probabilidades, de tal manera que el sumatorio de todas las probabilidades de las salidas de 1.
+
+$$f(z)= \dfrac{e^{z_j}}{\displaystyle \sum_{k=1}^{K} e^z} .$$
+:::
+
+### ReLU con fugas
+
+::: {style="text-align: justify"}
+La función ReLU con fugas (Leaky ReLU) se distingue de la función ReLU simple por permitir un pequeño gradiente para los valores de entrada negativos. Esto se logra mediante un parámetro escalar $a$, cuyo valor se encuentra dentro del rango de 0 a 1. La expresión matemática de esta función de activación es la siguiente:
+
+$$ f(x) = 
+    \left\{ \begin{array}{lcc} 0 & si & x \leq 0 \\ \\ a x & si & x \geq  0  \end{array} \right . $$
+:::
+
+::: {style="text-align: justify"}
+Dentro de la literatura existen más funciones de activación y pueden consultarse con detalle en @apicella2021survey.
+:::
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+#| label: fig-fact
+#| fig-cap: "Funciones de activación."
+#| fig-subcap:
+#|   - "ReLu"
+#|   - "Sigmoide"
+#|   - "Tangente hiperbólica"
+#|   - "Softmax"
+#|   - "ReLu con fugas"
+#| layout-ncol: 3
+#| layout-nrow: 2
+
+
+# ------- ReLu -------
+ReLu = function(x) { max(0,x) }
+x = seq(-10, 10, by = 0.1)
+y = sapply(x, ReLu)
+plot(x, y, type = "l", lwd = 2, col = "green3", xlab = "x", ylab = "F(x)",
+     main = "Función de Activación ReLu")
+grid(col = "gray")
+
+
+# ------- Sigmoide -------
+sigmoid = function(x) { 1 / (1 + exp(-x)) }
+x = seq(-10, 10, by = 0.1)
+y = sigmoid(x)
+plot(x, y, type = "l", lwd = 2, col = "orange", xlab = "x", ylab = "σ(x)",
+     main = "Función de Activación Sigmoide")
+grid(col = "gray")
+
+# ------- ReLu -------
+ReLu = function(x) { max(0,x) }
+x = seq(-10, 10, by = 0.1)
+y = sapply(x, ReLu)
+plot(x, y, type = "l", lwd = 2, col = "green3", xlab = "x", ylab = "F(x)",
+     main = "Función de Activación ReLu")
+grid(col = "gray")
+
+# ------- Leaky ReLu -------
+LReLu = function(x) { ifelse(x > 0, x, 0.1*x) }
+x = seq(-10, 10, by = 0.1)
+y = sapply(x, LReLu)
+plot(x, y, type = "l", lwd = 2, col = "darkorchid4", xlab = "x", ylab = "F(x)",
+     main = "Función de Activación ReLu con Fugas")
+grid(col = "gray")
+
+# ------- Tanh -------
+Tan_h = function(x) { (exp(x)-exp(-x)) / (exp(x) + exp(-x)) }
+x = seq(-10, 10, by = 0.1)
+y = Tan_h(x)
+plot(x, y, type = "l", lwd = 2, col = "deeppink3", xlab = "x", ylab = "tanh(x)",
+     main = "Función de Activación Tanh")
+grid(col = "gray")
+
+# ------- Softmax -------
+Softmax <- function(x) {exp(x)/sum(exp(x))}
+x = seq(-10, 10, by = 0.1)
+y = Softmax(x)
+plot(x, y, type = "l", lwd = 2, col = "magenta4", xlab = "x", ylab = "S(x)",
+     main = "Función de Activación Softmax")
+grid(col = "gray")
+```
+
+## Optimizador Adam {#sec-Adam}
+
+::: {style="text-align: justify"}
+El optimizador Adam (Adaptive Moment Estimation) es uno de los algoritmos de optimización más populares y efectivos en el campo del aprendizaje automático y la optimización de redes neuronales. Fue propuesto por por D.P. Kingma y J.Ba en el articulo [@kingma2014adam]. El nombre "Adam" proviene de "Adaptive Moment Estimation," reflejando su método para estimar momentos adaptativos durante la optimización.
+:::
+
+## Función de Pérdida {#sec-función-de-perdida}
+
+::: {style="text-align: justify"}
+Las funciones de costo, pérdida u objetivo son conceptos fundamentales en el campo del aprendizaje automático y la optimización matemática. Estas funciones permiten evaluar la calidad de un modelo al cuantificar el error o la discrepancia entre las predicciones del modelo y los valores reales.
+
+Para evaluar el rendimiento del modelo se utiliza la función de costo. Esta proporciona una métrica cuantitativa que permite evaluar la precisión de las predicciones. Un valor bajo de la función de costo indica que el modelo está haciendo predicciones cercanas a los valores reales, mientras que un valor alto indica lo contrario.
+:::
+
+## Algunos tipos de Red Neuronal Artificial
+
+### Perceptrón Simple
+
+::: {style="text-align: justify"}
+El perceptrón simple fue introducido por @rosenblatt1958perceptron, donde la arquitectura más simple, es una red en la que la capa de entrada está directamente relacionada con la capa de salida a través de una red ponderada (sin capas ocultas). Es un modelo unidireccional compuesto por dos capas de neuronas, una de entrada y otra de salida. La operación en un perceptrón simple que consta de $n$ neuronas de entrada y $m$ neuronas de salida se puede expresar como:
+
+$$ y_i = f \left(  \sum_{j=1}^{n}  w_{ij} x_j - \theta_i \right) ,$$ con $i=1, \dots , n .$
+
+![Arquitectura y función de activación de un perceptrón simple](perceptron.png){fig-align="center" width="562"}
+:::
+
+### Red Neuronal Recurrente
+
+::: {style="text-align: justify"}
+Una red neuronal recurrente es una red neuronal que contiene capas internas que realimentan la red, generando así memoria.
+
+A finales de los años 80, varios investigadores, entre ellos @rumelhart1986learning, introdujeron redes neuronales simples parcialmente recurrentes para aprender cadenas de caracteres.
+
+Las redes neuronales recurrentes han sido un foco importante de investigación y desarrollo durante la década de 1990.
+
+Una red recurrente según @da1996fundamentals es una red neuronal con conexiones. retroalimentadas (bucle cerrado). Los ejemplos, de acuerdo con lo citado por @hecht1990neurocomputing, incluyen los modelos de redes BAM, Hopfield, la máquina de Boltzmann y las redes de retropropagación recurrentes.
+
+Su arquitectura varía según estén totalmente interconectadas (@fig-Recurrente1), hasta redes parcialmente conectadas (@fig-Recurrente2), incluidas redes de avance multicapa con distintas capas de entrada y salida. Las redes completamente conectadas no tienen capas de entrada de nodos distintas y cada nodo tiene entradas de todos los demás nodos.
+
+En este tipo de redes neuronales es posible enviar retroalimentación al propio nodo.
+
+![Ejemplo de una capa de RNA recurrente totalmente conectada.](Recurrente1.png){#fig-Recurrente1 fig-align="center" width="278"}
+
+En este caso se han utilizado redes neuronales simples parcialmente recurrentes (@fig-Recurrente2) para aprender cadenas de caracteres.
+
+![Ejemplo de una conexión entre capas de una RNA recurrente simple.](Recurrente2.png){#fig-Recurrente2 fig-align="center" width="293"}
+
+En esta red algunos nodos son parte de una estructura de retroalimentación, otros nodos proporcionan el contexto secuencial y reciben retroalimentación de otros nodos.
+
+Los pesos (C1 y C2) se procesan como los de las unidades de entrada, por ejemplo, mediante retropropagación. Los nodos reciben retroalimentación retardada en el tiempo desde, en el caso de la (@fig-Recurrente2), las unidades de segunda capa.
+
+Los datos de entrenamiento constan de entradas y sus salidas sucesoras deseadas. La red puede entrenarse para predecir la siguiente letra en una cadena de caracteres y validar una cadena de caracteres.
+:::
+
+### Red Neuronal LSTM
+
+::: {style="text-align: justify"}
+La red neuronal con memoria a corto y largo plazo (LSTM, por su sigla en inglés) es una red neuronal recurrente con una memoria de estado y una estructura de red multicapa.
+
+Las redes de memoria a corto y largo plazo (LSTM), son un tipo especial de RNN, capaz de aprender dependencias a largo plazo. Fueron introducidos por @schmidhuber1997long .
+
+Los LSTM están diseñados explícitamente para evitar el problema de dependencia a largo plazo. Recordar información durante largos períodos de tiempo es prácticamente su comportamiento predeterminado.
+
+El primer paso en para construir una arquitectura LSTM es decidir qué información será descartada del estado de la celda. Esta decisión la toma una capa sigmoidea llamada "capa de puerta de olvido" esto se puede ver en la @fig-celda.
+
+![Celda de estado](LSTM.png){#fig-celda}
+:::
+
+### Red neuronal Convolucional (CNN)
+
+::: {style="text-align: justify"}
+<!-- La red neuronal convolucional o en ingles, Convolutional Neural Network (CNN), son un tipo de red neuronal que esta diseñado principalmente para procesar datos de imágenes. -->
+
+Las redes convolucionales [@lecun1989generalization], también conocidas como redes neuronales convolucionales o en ingles, Convolutional Neural Network (CNN), son un tipo de red neuronal que esta diseñado principalmente para procesar datos de imagenes. <!-- Mismas que tienen una topología conocida en forma de cuadrícula. Algunos ejemplos incluyen datos de series temporales, que pueden considerarse como una cuadrícula 1D que toma muestras a intervalos de tiempo regulares, y datos de imágenes, que pueden considerarse como una cuadrícula 2D de píxeles. -->
+
+La red neuronal se basa en la comprensión de @hubel1959receptive sobre cómo funciona el procesamiento de imágenes en el cerebro de los gatos y bajo la hipótesis de que su campo visual parece estimular ciertas neuronas.
+
+Las redes neuronales convolucionales están diseñadas para funcionar con entradas estructuradas en cuadrícula, que tienen fuertes dependencias espaciales en regiones locales de la red. Un ejemplo común de datos generados por una cuadrícula es bidimensional. Este tipo de material exhibe dependencia espacial porque las áreas adyacentes de la imagen se parecen a los colores de los píxeles. Las dimensiones adicionales capturan diferentes colores, creando un volumen de entrada tridimensional. Por lo tanto, las redes neuronales convolucionales parecen depender de la distancia. Otras formas de datos secuenciales como texto, series de tiempo y secuencias también pueden considerarse casos especiales de estructuras estructuradas en cuadrícula. La mayoría de las aplicaciones de redes neuronales artificiales se centran en imágenes, aunque estas redes también se pueden utilizar sobre cualquier tipo de datos espaciales y temporales.
+:::
+
+#### Capas de una red neuronal convolucional (CNN)
+
+::: {style="text-align: justify"}
+<!-- Se compone de múltiples bloques de construcción (conocidos como capas de la arquitectura), en esta subsección describimos algunos de estos bloques de construcción en detalle con su papel en la arquitectura de CNN como se ve en la @fig-entrenamiento_cnn. -->
+
+La arquitectura de una red neuronal convolucional (CNN) se compone de múltiples bloques de construcción, conocidos como capas. A continuación se describen algunos de estos bloques y su papel en la arquitectura de la CNN como se muestra en la @fig-entrenamiento_cnn.
+:::
+
+![Esquema de Red Neuronal Convolucional](convolucion1.png){#fig-entrenamiento_cnn}
+
+#### Capa convolucional
+
+::: {style="text-align: justify"}
+La capa convolucional es el componente más importante de cualquier arquitectura CNN. Contiene un conjunto de núcleos convolucionales (también llamados filtros), que convolucionan con la imagen de entrada (métricas N-dimensionales) para generar un mapa de características de salida.
+:::
+
+#### Kernel {#sec-kernel}
+
+::: {style="text-align: justify"}
+Un kernel, núcleo o filtro en la convolución de una CNN es una una matriz de $n \times n$ que contiene valores o números discretos, donde cada valor se conoce como el peso de este núcleo.
+
+Durante el inicio del proceso de entrenamiento de un modelo CNN, se asignan los pesos en el kernel de manera especifica o aleatoria dependiendo del enfoque. Luego, con cada época del entrenamiento, se ajustan los pesos y el núcleo aprende a extraer características significativas.
+:::
+
+#### Proceso de convolución
+
+::: {style="text-align: justify"}
+Las capas de redes neuronales tradicionales utilizan la multiplicación de matrices por una matriz de parámetros con un parámetro separado que describe la interacción entre cada unidad de entrada y cada unidad de salida. Esto significa que cada unidad de salida interactúa con cada unidad de entrada. Sin embargo, las redes convolucionales suelen tener interacciones escasas (también denominadas conectividad dispersa o pesos dispersos). Esto se logra haciendo el kernel más pequeño que la entrada.
+
+Para comprender la operación de convolución en una imagen en escala de grises de $n \times  n$ de diámetro y un núcleo de $m \times m$ con pesos inicializados aleatoriamente se sigue el siguiente proceso:
+
+**Deslizamiento del núcleo.**
+
+Se toma el núcleo de $m \times m$ y se desliza sobre toda la imagen completa de $n \times  n$ tanto horizontal como verticalmente.
+
+**Producto escalar.**
+
+En cada posición, se calcula el producto escalar entre el núcleo y la imagen de entrada. Esto se realiza multiplicando los valores correspondientes del núcleo y la imagen, y luego sumando estos productos.
+
+**Generación del valor de salida.**
+
+La suma resultante de los productos se convierte en un valor de escala en el mapa de características de salida. Este proceso continúa hasta que el núcleo ya no puede deslizarse más sobre la imagen.
+
+Este procedimiento permite generar un mapa de características de la imagen original, facilitando así la extracción de características relevantes.
+
+La fórmula para encontrar el tamaño del mapa de características de salida después de la operación de convolución:
+
+$$  \displaystyle h^\prime = \lfloor  \dfrac{h-f+p}{s} +1 \rfloor ,$$
+
+$$  \displaystyle w^\prime = \lfloor  \dfrac{w-f+p}{s} + 1 \rfloor, $$
+
+Donde $h^\prime$ denota la altura del mapa de características de salida, $w^\prime$ denota el ancho del mapa de características de salida, $h^\prime$ denota la altura de la imagen de entrada, $w$ denota el ancho de la imagen de entrada, $f$ es el tamaño del filtro, $p$ denota el relleno de la operación de convolución y $s$ denota el paso de la operación de convolución. $$ \lfloor \cdot \rfloor $$ denota la operación de piso (floor), que redondea el resultado hacia abajo al entero más cercano.
+:::
+
+#### Capas de Agrupación (Pooling layer) {#sec-pooling}
+
+::: {style="text-align: justify"}
+Las capas de agrupación (pooling layer) se utilizan para submuestrear los mapas de características (producidos después de operaciones de convolución), es decir, toma los mapas de características de mayor tamaño y los reduce a mapas de características de menor tamaño. Al reducir los mapas de características, siempre se conserva la características (o información) más dominantes en cada paso del grupo. La operación de agrupación se realiza especificando el tamaño de la región agrupada y el ritmo de la operación, similar a la operación de convolución.
+
+La fórmula para encontrar el tamaño del mapa de características de salida después de la operación de agrupación:
+
+$$ h^\prime = \lfloor \dfrac{h-f}{s} \rfloor $$ $$w^´ = \lfloor \dfrac{w-f}{s} \rfloor ,$$
+
+Donde $h^\prime$ denota la altura del mapa de características de salida, $w^\prime$ denota el ancho de la mapa de características de salida, $h$ denota la altura del mapa de características de entrada, $w$ denota el ancho del mapa de características de entrada, $f$ es el tamaño de la región de agrupación y $s$ denota el paso de la operación de agrupación. 
+$$ \lfloor \cdot \rfloor ,$$ 
+denota la operación de piso.
+
+Existen diversas técnicas de agrupación empleadas en diferentes capas de redes neuronales, entre las cuales se incluyen a agrupación máxima (Max pooling), la agrupación mínima, la agrupación promedio, las agrupaciones cerradas y las agrupaciones de árboles, entre otras. **Max Pooling** es la técnica de agrupación más popular y utilizada para CNN.
+:::
+
+##### Máxima agrupacion (Max-Pooling)
+
+::: {style="text-align: justify"}
+Esta operación consiste en aplicar una matriz de núcleo de tamaño $m \times m$ y quedarse con el valor máximo en ella, por lo que el resultado de esta aplicación pasaría a tener una única dimensión y podría ser la entrada de la capa de salida.
+:::
+
+![Operación maxpooling, donde el tamaño de la región de agrupación es $2 \times 2$ (que se muestra en color naranja, en el mapa de características de entrada) y la zancada es 1 y el correspondiente calculado valor en el mapa de características de salida (que se muestra en verde)](max-pooling.jpg){#fig-maxPooling}
+
+##### Aplanamiento en una red neuronal Convolucional (CNN) {#sec-flatten}
+
+::: {style="text-align: justify"}
+Las capas completamente conectadas, a diferencia de las capas convolucionales, no pueden procesar datos directamente con información espacial (alto, ancho). El aplanamiento, como se describe en el artículo [@he2016deep], transforma los mapas de características (típicamente tensores 3D) en un vector 1D, permitiendo su integración en las capas completamente conectadas.
+
+El aplanamiento (o Flattering) en una red neuronal convolucional (CNN) se refiere al proceso de transformar la salida de capas convolucionales y de agrupación de un tensor multidimensional (que contiene información espacial) en un vector unidimensional con se ve en la @fig-flatten. Esto permite que la red aprenda las relaciones entre características extraídas de diferentes ubicaciones espaciales en la entrada.
+
+![Aplananimeto después de una capa de Agrupación en CNN.](Flattening.png){#fig-flatten}
+:::
+
+# Entrenamiento de una RNA
+
+::: {style="text-align: justify"}
+El entrenamiento de RNA requiere de una base de datos con representaciones de los fenómenos del problema en particular.
+
+En este esquema, la red compuesta por capas conectadas, mapea los datos de entrada a las predicciones obtenidas. Luego, la [función de pérdida](redes.qmd#sec-función-de-perdida) compara dichas predicciones con los objetivos de salida esperados, obteniendo así una medida del error. El algoritmo de optimización utiliza dicha medida para actualizar los pesos sinápticos de la red neuronal. Inicialmente a los pesos de la red se le asignan valores aleatorios, pero a partir de cada muestra de datos que la red procesa la función de pérdida se minimiza, luego la diferencia entre los valores de salida esperados y calculados se minimiza y los pesos sinápticos se ajustan.
+
+Antes de iniciar el proceso de aprendizaje es necesario particionar los datos. Éstos se dividen en dos conjuntos: un conjunto para **entrenamiento** y un conjunto para **testeo**. El conjunto de entrenamiento, que representa el $\%70$ u $80 \%$ del total de los datos históricos que serán utilizados para la etapa de entrenamiento en modelos de aprendizaje automático y el análisis estadístico. Luego, el conjunto para testeo que representa el $20 \%$ u $30 \%$ de los datos históricos y es utilizado para la evaluación de los modelos creados.
+:::
+
+# Sobreentrenamiento de una RNA {#sec-sobreentrenamiento}
+
+<!-- ![Alt Text](backpropagation.gif){fig-align="center" width="581"} -->
+
+::: {style="text-align: justify"}
+En la etapa del entrenamiento el conjunto de datos que se utilizó permite ajustar los parámetros del modelo (pesos de conexiones y bias), mientras que el subconjunto de test permite probar la RNA entrenada en patrones nuevos, no presentes en el conjunto de entrenamiento.
+
+Si el conjunto de datos durante entrenamiento fue elegida de manera correcta, esto se observa en el gráfico de la izquierda en la @fig-sobren, los errores van disminuyendo en cada época. En general no se puede asegurar que el conjunto de entrenamiento esté libre de ruido ni que se haya sido seleccionada con la máxima precisión deseada, por lo que al entrenar suele ocurrir el fenómeno de sobreentrenamiento o sobreajuste. Esto se puede ver claramente en el gráfico de la derecha de la @fig-sobren, ambos errores van disminuyendo hasta que llega un punto en el que el error de test empieza a aumentar. A partir de ese punto el sistema empieza a sobreajustarse.
+
+![Gráfico de errres en el proceso de entrenamiento de una RNA](sobrenetrenamiento.png){#fig-sobren fig-align="center"}
+:::

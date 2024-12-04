@@ -1,0 +1,46 @@
+{
+    "entries": [
+        {
+            "file": "herramientas.qmd",
+            "type": "tbl",
+            "id": "variables",
+            "suffix": "",
+            "title": "Mediciones."
+        },
+        {
+            "file": "herramientas.qmd",
+            "type": "fig",
+            "id": "termometro",
+            "suffix": "",
+            "title": "Termómetro para medir la temperatura del aire."
+        },
+        {
+            "file": "herramientas.qmd",
+            "type": "fig",
+            "id": "anemometro",
+            "suffix": "",
+            "title": "Anemómetro para medir la velocidad del viento."
+        },
+        {
+            "file": "herramientas.qmd",
+            "type": "fig",
+            "id": "barometro",
+            "suffix": "",
+            "title": "Barometro de mercurio para medir la presión atmosférica."
+        },
+        {
+            "file": "herramientas.qmd",
+            "type": "fig",
+            "id": "higro",
+            "suffix": "",
+            "title": "Ejemplo de un higrómetro para medir la humedad."
+        },
+        {
+            "file": "herramientas.qmd",
+            "type": "fig",
+            "id": "clima",
+            "suffix": "",
+            "title": "Imagen satelital que muestra sistemas atmosféricos y su interacción en América del Norte."
+        }
+    ]
+}

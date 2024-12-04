@@ -1,0 +1,41 @@
+# Fdb version 4
+["xdvipdfmx"] 0 "index.xdv" "index.pdf" "index" 0 -1
+  "index.xdv" 0 -1 0 "xelatex"
+  (generated)
+  "index.pdf"
+  (rewritten before read)
+["xelatex"] 1723040817.33124 "index.tex" "index.xdv" "index" 1723040818.38463 2
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty" 1717233386 7237 bdd120a32c8fdb4b433cf9ca2e7cd98a ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty" 1717233370 5949 3f3fd50a8cc94c3d4cbf4fc66cd3df1c ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty" 1717233370 13829 94730e64147574077f8ecfea9bb69af4 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty" 1718149605 2222 2166a1f7827be30ddc30434e5efcee1b ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty" 1718149605 4173 d22509bc0c91281d991b2de7c88720dd ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty" 1718149605 88370 47fa7ec33a33125284e7c3c8193c6ce1 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty" 1718149605 4474 23ca1d3a79a57b405388059456d0a8df ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty" 1718149605 2444 71618ea5f2377e33b04fb97afdd0eac2 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/footmisc/footmisc.sty" 1717233580 21399 e9fa1517a82f349507e998594ef20b82 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty" 1718149619 2671 70891d50dac933918b827d326687c6e8 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty" 1722383836 220493 bbff330ab3155b3f5df1de2445e80c9f ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrbase.sty" 1717233588 100856 24b70029ad44c2ee829db2529cf4ee23 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrkbase.sty" 1717233588 21943 93cf6c456e50f74225092b8714462fa4 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrlfile-hook.sty" 1717233588 11185 15c86b5a61db19da88ab941ca5b70a12 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrlfile.sty" 1717233588 3328 3d5fc41a419bf18130ce17d90a23c295 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrlogo.sty" 1717233588 2162 418e29bcf2b8059e8a9ee1ea4d0d0c87 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrreprt.cls" 1717233588 276315 91eeb23b9f1c27ea57cf36dce5ccf392 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/scrsize11pt.clo" 1717233588 6855 df7fd09e85c1177ddf994ea0c3f3224c ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/tocbasic.sty" 1717233588 107286 dc7973acee1c3708d665791407e3832e ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/koma-script/typearea.sty" 1717233588 58382 11e5cfa7a7ea68055da565b4657ea350 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty" 1723028386 6565 7e70b0b6215591329b4c82651584e425 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/unicode-math/unicode-math.sty" 1717233416 1474 b42cfbe849cb22ed1c0632800327884f ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/url/url.sty" 1717233418 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty" 1717233418 55487 80a65caedd3722f4c20a14a69e785d8f ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-dist/web2c/texmf.cnf" 1722383837 42007 0b741a3c21a5ca32b40e3846e75b3548 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf-var/web2c/xetex/xelatex.fmt" 1722383886 9150616 0ba612e1b8751060af40e1f4d7e52ca6 ""
+  "c:/Users/chaca/AppData/Roaming/TinyTeX/texmf.cnf" 1717233348 903 164c5b127cd0d6dc91abad2f62421ea2 ""
+  "index.aux" 1723040817 32 3985256e7290058c681f74d7a3565a19 "xelatex"
+  "index.tex" 1723040816 134824 0273146afd21330c10c1906cfcc1cacf ""
+  (generated)
+  "index.aux"
+  "index.log"
+  "index.xdv"
+  (rewritten before read)

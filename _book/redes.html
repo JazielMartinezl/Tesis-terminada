@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Redes neuronales Biológicas y artificiales – Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./metodologia.html" rel="next">
+<link href="./herramientas.html" rel="prev">
+<link href="./logofcfm.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1d566dabc24bf713d8423e28b81a4ff.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d920699d4f1f5826de366111388187f3.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d6ea0af10a877556433e7addd9f09a7f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-d9caa54feebaedcb82937774cd9e6d58.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="6&nbsp; Redes neuronales Biológicas y artificiales – Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.">
+<meta property="og:image" content="neurona2.jpg">
+<meta property="og:site_name" content="Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./redes.html">Redes neuronales</a></li><li class="breadcrumb-item"><a href="./redes.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Redes neuronales Biológicas y artificiales</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./LOGO50.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Comparación de pronósticos de variables climaticas mediante adaptación de redes neuronales artificiales LSTM y convolucional.</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Comparación-de-pronósticos-de-variables-climaticas-mediante-adaptación-de-redes-neuronales-artificiales-LSTM-y-convolucional..pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Comparación-de-pronósticos-de-variables-climaticas-mediante-adaptación-de-redes-neuronales-artificiales-LSTM-y-convolucional..epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Resumen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Objetivos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Objetivos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Preliminares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Probabilidad.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Nociones basicas de Probabilidad</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Estadistica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Algunas nociones de Estadística</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Series de tiempo</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./series.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Series de tiempo</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Herramientas de inteligencia artificial</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./herramientas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Herramientas de inteligencia artificial</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Redes neuronales</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./redes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Redes neuronales Biológicas y artificiales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Estudio de caso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metodologia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metodología.</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./estudio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Estudio de caso</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Conclusiones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusiones</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Propuestas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propuestas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lista de obras consultadas</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#inspiración-biológica-de-las-redes-neuronales-artificiales" id="toc-inspiración-biológica-de-las-redes-neuronales-artificiales" class="nav-link active" data-scroll-target="#inspiración-biológica-de-las-redes-neuronales-artificiales"><span class="header-section-number">6.1</span> Inspiración Biológica de las Redes neuronales Artificiales</a></li>
+  <li><a href="#modelo-de-red-neuronal-artificial" id="toc-modelo-de-red-neuronal-artificial" class="nav-link" data-scroll-target="#modelo-de-red-neuronal-artificial"><span class="header-section-number">6.2</span> Modelo de red neuronal Artificial</a></li>
+  <li><a href="#arquitectura-de-una-red-neuronal-artificial" id="toc-arquitectura-de-una-red-neuronal-artificial" class="nav-link" data-scroll-target="#arquitectura-de-una-red-neuronal-artificial"><span class="header-section-number">6.3</span> Arquitectura de una Red Neuronal Artificial</a></li>
+  <li><a href="#elementos-de-una-red-natural-artificial" id="toc-elementos-de-una-red-natural-artificial" class="nav-link" data-scroll-target="#elementos-de-una-red-natural-artificial"><span class="header-section-number">6.4</span> Elementos de una Red Natural Artificial</a></li>
+  <li><a href="#funciones-de-activación" id="toc-funciones-de-activación" class="nav-link" data-scroll-target="#funciones-de-activación"><span class="header-section-number">6.5</span> Funciones de activación</a>
+  <ul class="collapse">
+  <li><a href="#sec-Relu" id="toc-sec-Relu" class="nav-link" data-scroll-target="#sec-Relu"><span class="header-section-number">6.5.1</span> ReLU (Rectified Lineal Unit)</a></li>
+  <li><a href="#sigmoid-sigmoide" id="toc-sigmoid-sigmoide" class="nav-link" data-scroll-target="#sigmoid-sigmoide"><span class="header-section-number">6.5.2</span> Sigmoid (Sigmoide)</a></li>
+  <li><a href="#tangente-hiperbólica-tangent-hyperbolic" id="toc-tangente-hiperbólica-tangent-hyperbolic" class="nav-link" data-scroll-target="#tangente-hiperbólica-tangent-hyperbolic"><span class="header-section-number">6.5.3</span> Tangente hiperbólica (Tangent Hyperbolic )</a></li>
+  <li><a href="#softmax" id="toc-softmax" class="nav-link" data-scroll-target="#softmax"><span class="header-section-number">6.5.4</span> Softmax</a></li>
+  <li><a href="#relu-con-fugas" id="toc-relu-con-fugas" class="nav-link" data-scroll-target="#relu-con-fugas"><span class="header-section-number">6.5.5</span> ReLU con fugas</a></li>
+  </ul></li>
+  <li><a href="#sec-Adam" id="toc-sec-Adam" class="nav-link" data-scroll-target="#sec-Adam"><span class="header-section-number">6.6</span> Optimizador Adam</a></li>
+  <li><a href="#sec-función-de-perdida" id="toc-sec-función-de-perdida" class="nav-link" data-scroll-target="#sec-función-de-perdida"><span class="header-section-number">6.7</span> Función de Pérdida</a></li>
+  <li><a href="#algunos-tipos-de-red-neuronal-artificial" id="toc-algunos-tipos-de-red-neuronal-artificial" class="nav-link" data-scroll-target="#algunos-tipos-de-red-neuronal-artificial"><span class="header-section-number">6.8</span> Algunos tipos de Red Neuronal Artificial</a>
+  <ul class="collapse">
+  <li><a href="#perceptrón-simple" id="toc-perceptrón-simple" class="nav-link" data-scroll-target="#perceptrón-simple"><span class="header-section-number">6.8.1</span> Perceptrón Simple</a></li>
+  <li><a href="#red-neuronal-recurrente" id="toc-red-neuronal-recurrente" class="nav-link" data-scroll-target="#red-neuronal-recurrente"><span class="header-section-number">6.8.2</span> Red Neuronal Recurrente</a></li>
+  <li><a href="#red-neuronal-lstm" id="toc-red-neuronal-lstm" class="nav-link" data-scroll-target="#red-neuronal-lstm"><span class="header-section-number">6.8.3</span> Red Neuronal LSTM</a></li>
+  <li><a href="#red-neuronal-convolucional-cnn" id="toc-red-neuronal-convolucional-cnn" class="nav-link" data-scroll-target="#red-neuronal-convolucional-cnn"><span class="header-section-number">6.8.4</span> Red neuronal Convolucional (CNN)</a></li>
+  </ul></li>
+  <li><a href="#entrenamiento-de-una-rna" id="toc-entrenamiento-de-una-rna" class="nav-link" data-scroll-target="#entrenamiento-de-una-rna"><span class="header-section-number">7</span> Entrenamiento de una RNA</a></li>
+  <li><a href="#sec-sobreentrenamiento" id="toc-sec-sobreentrenamiento" class="nav-link" data-scroll-target="#sec-sobreentrenamiento"><span class="header-section-number">8</span> Sobreentrenamiento de una RNA</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./redes.html">Redes neuronales</a></li><li class="breadcrumb-item"><a href="./redes.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Redes neuronales Biológicas y artificiales</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Redes neuronales Biológicas y artificiales</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- ##Red neuronal artificial (RNA) -->
+<section id="inspiración-biológica-de-las-redes-neuronales-artificiales" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="inspiración-biológica-de-las-redes-neuronales-artificiales"><span class="header-section-number">6.1</span> Inspiración Biológica de las Redes neuronales Artificiales</h2>
+<div style="text-align: justify">
+<p>Se parte del estudio de los seres vivos que poseen cerebro uno de los órganos más complejos del cuerpo humano, el cual hace parte de un sistema nervioso central. Funciona como el centro de control de todas nuestras actividades, tanto conscientes como inconscientes, regulando funciones esenciales como la respiración, el ritmo cardíaco y la digestión, así como procesos más complejos como el pensamiento, la memoria y las emociones.</p>
+<p>El cerebro está compuesto por miles de millones de células nerviosas llamadas <strong>neuronas</strong>. Una imagen de una neurona real se puede observar en <a href="#fig-neu" class="quarto-xref">Figura&nbsp;<span>6.1</span></a>. Estas neuronas se comunican entre sí a través de conexiones especializadas llamadas sinapsis, formando una extensa red de comunicación.</p>
+<div id="fig-neu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-neu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="neurona2.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="278">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-neu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.1: Imagen de una neurona biologica.
+</figcaption>
+</figure>
+</div>
+<p>Cuando una neurona recibe suficientes estímulos de otras neuronas a través de sus dendritas y alcanza un umbral, se dispara un impulso eléctrico conocido como potencial de acción. Este impulso viaja a lo largo del axón de la neurona y provoca la liberación de neurotransmisores en la sinapsis, los cuales estimulan a las neuronas receptoras. La cantidad de información procesada y almacenada depende de los niveles de estímulos recibidos y de la eficiencia de estas conexiones sinápticas esto se puede ver visualmente en la <a href="#fig-neuronas" class="quarto-xref">Figura&nbsp;<span>6.2</span></a>. A través de este complejo sistema de señales, el cerebro puede procesar información, aprender de experiencias, tomar decisiones y coordinar acciones.</p>
+<!-- Cada neurona recibe señales de otras neuronas a través de sus dendritas y envía señales a través de su axón. La transmisión de señales entre neuronas se realiza mediante impulsos eléctricos y la liberación de neurotransmisores, que son sustancias químicas que facilitan la comunicación entre las células nerviosas. -->
+<!-- Las redes neuronales biológicas funcionan mediante un proceso de integración y propagación de información.  -->
+<!-- Cuando una neurona recibe suficientes estímulos de otras neuronas,la cantidad de información procesada y almacenada depende de los niveles alcanzando un umbral, el cual dispara un impulso eléctrico, conocido como potencial de acción. Este impulso viaja a lo largo del axón de la neurona y provoca la liberación de neurotransmisores en la sinapsis, que a su vez estimulan a las neuronas receptoras. A través de este complejo sistema de señales, el cerebro puede procesar información, aprender de experiencias, tomar decisiones y coordinar acciones. -->
+<!-- En la emulación de dicho sistema neuronal biológico, por medio de un sistema neuronal artificial, se puede establecer una estructura jerárquica similar a la existente en el cerebro. El elemento esencial será la neurona artificial, la cual se organizará en capas. Varias capas constituirán una red neuronal. Finalmente, una red neuronal junto con los interfaces de entrada y salida constituirá el sistema global del proceso. -->
+<!-- El elemento básico de un sistema neuronal biológico es la neurona. Un sistema neuronal biológico está compuesto por millones de neuronas organizadas en capas. En la emulación de dicho sistema neuronal biológico, por medio de un sistema neuronal artificial, se puede establecer una estructura jerárquica similar a la existente en el cerebro. El elemento esencial será la neurona artificial, la cual se organizará en capas. Varias capas constituirán una red neuronal. Finalmente, una red neuronal junto con los interfaces de entrada y salida constituirá el sistema global del proceso. -->
+<div id="fig-neuronas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-neuronas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="RN_biologica.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-neuronas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.2: Estructura básica de una neurona biológica.
+</figcaption>
+</figure>
+</div>
+<p>La adaptación de la estructura de las redes neuronales biológicas fue fundamental para desarrollar un modelo matemático de neuronas artificiales, introducido en la década de 1940. Warren McCulloch y Walter Pitts <span class="citation" data-cites="mcculloch1943logical">(<a href="references.html#ref-mcculloch1943logical" role="doc-biblioref">McCulloch y Pitts 1943</a>)</span>, en su modelo no solo abarcaba los conceptos básicos de una neurona artificial, sino que también incorporaba la combinación lineal de entradas y la función de activación. Sin embargo, Frank Rosenblatt expandió este concelto de las redes neuronales artificiales con la introducción del perceptrón. En su trabajo <span class="citation" data-cites="rosenblatt1958perceptron">(<a href="references.html#ref-rosenblatt1958perceptron" role="doc-biblioref">Rosenblatt 1958</a>)</span>, describió cómo este tipo de red neuronal podía aprender a clasificar patrones ajustando los pesos de las conexiones neuronales.</p>
+<p>En la emulación de dicho sistema neuronal biológico, por medio de un sistema neuronal artificial, se puede establecer una estructura jerárquica similar a la existente en el cerebro. El elemento esencial será la neurona artificial, la cual se organizará en capas. Varias capas constituirán una red neuronal. Finalmente, una red neuronal junto con los interfaces de entrada y salida constituirá el sistema global del proceso.</p>
+</div>
+</section>
+<section id="modelo-de-red-neuronal-artificial" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="modelo-de-red-neuronal-artificial"><span class="header-section-number">6.2</span> Modelo de red neuronal Artificial</h2>
+<div style="text-align: justify">
+<p>Las Redes Neuronales Artificiales (RNA) son un modelo computacional inspirado en el modelo que componen las redes neuronales biológicas. Consta de un conjunto de unidades, neuronas artificiales interconectadas y permite la transmisión de señales. Estas señales pasan a través de la red neuronal en la que se encuentran después de pasar por diferentes operaciones generan el valor final de salida. Estas redes se distinguen por su capacidad de aprendizaje. Los problemas del mundo real, como la asociación, la evaluación o el reconocimiento de patrones, encuentran una resolución óptima a través de estas redes neuronales, de manera análoga a la efectividad que los seres humanos demuestran al abordar este tipo de razonamiento, clasificación y otros desafíos.</p>
+</div>
+</section>
+<section id="arquitectura-de-una-red-neuronal-artificial" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="arquitectura-de-una-red-neuronal-artificial"><span class="header-section-number">6.3</span> Arquitectura de una Red Neuronal Artificial</h2>
+<div style="text-align: justify">
+<p>La arquitectura de una red neuronal artificial se compone de nodos (neurona) que se organizan por capas. Estas capas se interconectan entre sí generando la similitud de la sinápsis que se presenta entre las neuronas biológicas. El comportamiento de ambas redes está determinado por la estructura de conexiones sinápticas. Estas conexiones sinápticas pueden ser direccionales, es decir, la información solamente puede propagarse en un único sentido (desde la neurona presináptica a la pos-sináptica). El conjunto de una o más capas constituye la red neuronal.</p>
+<p>Es posible dar una clasificación de estas capas:</p>
+<p><strong>Capa de entrada:</strong> también denominada sensorial, está compuesta por neuronas que reciben datos o señales procedentes del entorno.</p>
+<p><strong>Capas ocultas:</strong> no tiene una conexión directa con el entorno, es decir, no se conecta directamente ni a órganos sensores ni a efectores. Este tipo de capa oculta proporciona grados de libertad a la red neuronal gracias a los cuales es capaz de representar más fehacientemente determinadas características del entorno que trata de modelar.</p>
+<p><strong>Capa de salida:</strong> proporciona la respuesta a las señales de la entrada.</p>
+<p>Generalmente, las conexiones son entre neuronas pertenecientes a diferentes capas aunque son posibles las conexiones intercapas o de realimentación, aquellas que no siguen el sentido de entrada-salida sino que están conectadas entre capas anteriores o mismas neuronas de la capa.</p>
+<p>Estas capas se pueden observar en la <a href="#fig-RNA" class="quarto-xref">Figura&nbsp;<span>6.3</span></a>. La capa de entrada está compuesta por 7 neuronas, representadas en color morado, la cual es seguida de una capa oculta con 4 neuronas mostradas en color salmón. Finalmente, la capa de salida está representada en color rosa.</p>
+</div>
+<div id="fig-RNA" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-RNA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="esquema_rna.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="446">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-RNA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.3: Arquitectura de una RNA.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="elementos-de-una-red-natural-artificial" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="elementos-de-una-red-natural-artificial"><span class="header-section-number">6.4</span> Elementos de una Red Natural Artificial</h2>
+<div style="text-align: justify">
+<p>Dentro de la arquitectura de una RNA se pueden distinguir los siguientes elementos:</p>
+<p>En la capa de entrada ingresa el <strong>conjunto de entradas</strong> (datos) <span class="math inline">\(x_j\)</span> que es recibida por la neurona del sistema sensorial externo u otras neuronas con las que tiene conexión. Cada neurona de cualquier capa (o nodo) posee un <strong>peso sináptico</strong> <span class="math inline">\(w_{ij}\)</span>, con <span class="math inline">\(j=1, \dotsc , n.\)</span> Este se modifica dependiendo de la información recibida emulando la sinapsis entre las neuronas biológicas.</p>
+<p>Cada neurona tiene una <strong>regla de propagación</strong> <span class="math inline">\(h_i\)</span> definida a partir del conjunto de entradas y los pesos sinápticos. Es decir: <span class="math display">\[h_i  =  \sum_{i=1}^{n} w_{ij} x_j .\]</span> Suele ser habitual añadir al conjunto de pesos de la neurona un parámetro adicional <span class="math inline">\(\theta_i\)</span>, que se denomina umbral, el cual se acostumbra a restar al potencial pos-sináptico. Es decir: <span class="math display">\[h_i =  \sum_{i=1}^{n} w_{ij} x_j - \theta_i .\]</span></p>
+<p>En la <a href="#fig-elementos" class="quarto-xref">Figura&nbsp;<span>6.4</span></a> se presenta un modelo de red neuronal artificial que incorpora los componentes fundamentales antes presentados para este modelo.</p>
+<div id="fig-elementos" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-elementos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Elementos_rna.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-elementos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.4: Modelo de una neurona artificial.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="funciones-de-activación" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="funciones-de-activación"><span class="header-section-number">6.5</span> Funciones de activación</h2>
+<div style="text-align: justify">
+<p>Una <strong>función de activación</strong> es una asignación que establece la relación entre la salida de la capa de entrada y una capa oculta en un Red Neuronal Artificial (RNA) permitiendo a la red aprender. Normalmente los valores de la salida están comprendidos en un rango <span class="math inline">\((0,1)\)</span> o <span class="math inline">\((-1,1)\)</span>.</p>
+<p>Por ejemplo, dada una entrada <span class="math inline">\((x_i)\)</span> y un conjunto de pesos <span class="math inline">\((w_i)\)</span>, la función de activación toma una combinación lineal de estos (generalmente en forma de <span class="math inline">\((z = \sum_i w_i x_i + b)\)</span>, donde <span class="math inline">\((b)\)</span> es el sesgo) y aplica una transformación no lineal. Esta transformación permite que la red neuronal aprenda y adopte una capacidad eficaz al modelar los datos.</p>
+<!-- La principal ventaja de utilizar una función de activación es que permite a la red neuronal capturar y aprender relaciones no lineales en los datos, lo cual es fundamental para el éxito de las tareas de aprendizaje profundo. -->
+<!-- $$ y_i = f(x_i) = f_i \left( \sum_{j=1}^{n} w_{ij} x_j \right).$$ -->
+<p>De todas las funciones de activación que hay en la literatura, se van a considerar aquellas que generen menor costo computacional. Algunas de ellas son:</p>
+</div>
+<section id="sec-Relu" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="sec-Relu"><span class="header-section-number">6.5.1</span> ReLU (Rectified Lineal Unit)</h3>
+<div style="text-align: justify">
+<p>La función ReLU transforma los valores introducidos, anulando los valores negativos y dejando los positivos tal y como entran.</p>
+<p><span class="math display">\[
+f(x) = \max(0,x) =
+\left\{
+\begin{array}{ll}
+0 &amp; \text{si } x &lt; 0 \\
+x &amp; \text{si } x \geq 0
+\end{array}
+\right .
+\]</span></p>
+</div>
+</section>
+<section id="sigmoid-sigmoide" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="sigmoid-sigmoide"><span class="header-section-number">6.5.2</span> Sigmoid (Sigmoide)</h3>
+<div style="text-align: justify">
+<p>La función sigmoide transforma los valores introducidos a una escala (0,1), donde los valores altos tienen de manera asintótica a 1 y mientras que los valores muy bajos lo hacen al valor 0.</p>
+<p><span class="math display">\[ f(x)= \dfrac{1}{1- e^{-x}} .\]</span></p>
+</div>
+</section>
+<section id="tangente-hiperbólica-tangent-hyperbolic" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="tangente-hiperbólica-tangent-hyperbolic"><span class="header-section-number">6.5.3</span> Tangente hiperbólica (Tangent Hyperbolic )</h3>
+<div style="text-align: justify">
+<p>La función tangente hiperbólica realiza la misma tranformación anterior pero a una escala <span class="math inline">\((-1,1)\)</span>.</p>
+<p><span class="math display">\[ f(x) =\dfrac{2}{1+e^{-2x}} -1 .\]</span></p>
+</div>
+</section>
+<section id="softmax" class="level3" data-number="6.5.4">
+<h3 data-number="6.5.4" class="anchored" data-anchor-id="softmax"><span class="header-section-number">6.5.4</span> Softmax</h3>
+<div style="text-align: justify">
+<p>La función Softmax transforma las salidas a una representación en forma de probabilidades, de tal manera que el sumatorio de todas las probabilidades de las salidas de 1.</p>
+<p><span class="math display">\[f(z)= \dfrac{e^{z_j}}{\displaystyle \sum_{k=1}^{K} e^z} .\]</span></p>
+</div>
+</section>
+<section id="relu-con-fugas" class="level3" data-number="6.5.5">
+<h3 data-number="6.5.5" class="anchored" data-anchor-id="relu-con-fugas"><span class="header-section-number">6.5.5</span> ReLU con fugas</h3>
+<div style="text-align: justify">
+<p>La función ReLU con fugas (Leaky ReLU) se distingue de la función ReLU simple por permitir un pequeño gradiente para los valores de entrada negativos. Esto se logra mediante un parámetro escalar <span class="math inline">\(a\)</span>, cuyo valor se encuentra dentro del rango de 0 a 1. La expresión matemática de esta función de activación es la siguiente:</p>
+<p><span class="math display">\[ f(x) =
+    \left\{ \begin{array}{lcc} 0 &amp; si &amp; x \leq 0 \\ \\ a x &amp; si &amp; x \geq  0  \end{array} \right . \]</span></p>
+</div>
+<div style="text-align: justify">
+<p>Dentro de la literatura existen más funciones de activación y pueden consultarse con detalle en <span class="citation" data-cites="apicella2021survey">Apicella et&nbsp;al. (<a href="references.html#ref-apicella2021survey" role="doc-biblioref">2021</a>)</span>.</p>
+</div>
+<div id="fig-fact" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fact-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fact" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-fact-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fact-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="redes_files/figure-html/fig-fact-1.png" class="img-fluid figure-img" data-ref-parent="fig-fact" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fact-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) ReLu
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fact" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-fact-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fact-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="redes_files/figure-html/fig-fact-2.png" class="img-fluid figure-img" data-ref-parent="fig-fact" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fact-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Sigmoide
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fact" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-fact-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fact-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="redes_files/figure-html/fig-fact-3.png" class="img-fluid figure-img" data-ref-parent="fig-fact" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fact-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Tangente hiperbólica
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fact" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-fact-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fact-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="redes_files/figure-html/fig-fact-4.png" class="img-fluid figure-img" data-ref-parent="fig-fact" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fact-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Softmax
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fact" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-fact-5" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fact-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="redes_files/figure-html/fig-fact-5.png" class="img-fluid figure-img" data-ref-parent="fig-fact" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fact-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) ReLu con fugas
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fact" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-fact-6" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fact-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="redes_files/figure-html/fig-fact-6.png" class="img-fluid figure-img" data-ref-parent="fig-fact" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fact-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) ReLu
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fact-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.5: Funciones de activación.
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-Adam" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="sec-Adam"><span class="header-section-number">6.6</span> Optimizador Adam</h2>
+<div style="text-align: justify">
+<p>El optimizador Adam (Adaptive Moment Estimation) es uno de los algoritmos de optimización más populares y efectivos en el campo del aprendizaje automático y la optimización de redes neuronales. Fue propuesto por por D.P. Kingma y J.Ba en el articulo <span class="citation" data-cites="kingma2014adam">(<a href="references.html#ref-kingma2014adam" role="doc-biblioref">Kingma y Ba 2014</a>)</span>. El nombre “Adam” proviene de “Adaptive Moment Estimation,” reflejando su método para estimar momentos adaptativos durante la optimización.</p>
+</div>
+</section>
+<section id="sec-función-de-perdida" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="sec-función-de-perdida"><span class="header-section-number">6.7</span> Función de Pérdida</h2>
+<div style="text-align: justify">
+<p>Las funciones de costo, pérdida u objetivo son conceptos fundamentales en el campo del aprendizaje automático y la optimización matemática. Estas funciones permiten evaluar la calidad de un modelo al cuantificar el error o la discrepancia entre las predicciones del modelo y los valores reales.</p>
+<p>Para evaluar el rendimiento del modelo se utiliza la función de costo. Esta proporciona una métrica cuantitativa que permite evaluar la precisión de las predicciones. Un valor bajo de la función de costo indica que el modelo está haciendo predicciones cercanas a los valores reales, mientras que un valor alto indica lo contrario.</p>
+</div>
+</section>
+<section id="algunos-tipos-de-red-neuronal-artificial" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="algunos-tipos-de-red-neuronal-artificial"><span class="header-section-number">6.8</span> Algunos tipos de Red Neuronal Artificial</h2>
+<section id="perceptrón-simple" class="level3" data-number="6.8.1">
+<h3 data-number="6.8.1" class="anchored" data-anchor-id="perceptrón-simple"><span class="header-section-number">6.8.1</span> Perceptrón Simple</h3>
+<div style="text-align: justify">
+<p>El perceptrón simple fue introducido por <span class="citation" data-cites="rosenblatt1958perceptron">Rosenblatt (<a href="references.html#ref-rosenblatt1958perceptron" role="doc-biblioref">1958</a>)</span>, donde la arquitectura más simple, es una red en la que la capa de entrada está directamente relacionada con la capa de salida a través de una red ponderada (sin capas ocultas). Es un modelo unidireccional compuesto por dos capas de neuronas, una de entrada y otra de salida. La operación en un perceptrón simple que consta de <span class="math inline">\(n\)</span> neuronas de entrada y <span class="math inline">\(m\)</span> neuronas de salida se puede expresar como:</p>
+<p><span class="math display">\[ y_i = f \left(  \sum_{j=1}^{n}  w_{ij} x_j - \theta_i \right) ,\]</span> con <span class="math inline">\(i=1, \dots , n .\)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="perceptron.png" class="img-fluid figure-img" width="562"></p>
+<figcaption>Arquitectura y función de activación de un perceptrón simple</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="red-neuronal-recurrente" class="level3" data-number="6.8.2">
+<h3 data-number="6.8.2" class="anchored" data-anchor-id="red-neuronal-recurrente"><span class="header-section-number">6.8.2</span> Red Neuronal Recurrente</h3>
+<div style="text-align: justify">
+<p>Una red neuronal recurrente es una red neuronal que contiene capas internas que realimentan la red, generando así memoria.</p>
+<p>A finales de los años 80, varios investigadores, entre ellos <span class="citation" data-cites="rumelhart1986learning">Rumelhart, Hinton, y Williams (<a href="references.html#ref-rumelhart1986learning" role="doc-biblioref">1986</a>)</span>, introdujeron redes neuronales simples parcialmente recurrentes para aprender cadenas de caracteres.</p>
+<p>Las redes neuronales recurrentes han sido un foco importante de investigación y desarrollo durante la década de 1990.</p>
+<p>Una red recurrente según <span class="citation" data-cites="da1996fundamentals">Fontoura Costa y Travieso (<a href="references.html#ref-da1996fundamentals" role="doc-biblioref">1996</a>)</span> es una red neuronal con conexiones. retroalimentadas (bucle cerrado). Los ejemplos, de acuerdo con lo citado por <span class="citation" data-cites="hecht1990neurocomputing">Hecht-Nielsen (<a href="references.html#ref-hecht1990neurocomputing" role="doc-biblioref">1990</a>)</span>, incluyen los modelos de redes BAM, Hopfield, la máquina de Boltzmann y las redes de retropropagación recurrentes.</p>
+<p>Su arquitectura varía según estén totalmente interconectadas (<a href="#fig-Recurrente1" class="quarto-xref">Figura&nbsp;<span>6.6</span></a>), hasta redes parcialmente conectadas (<a href="#fig-Recurrente2" class="quarto-xref">Figura&nbsp;<span>6.7</span></a>), incluidas redes de avance multicapa con distintas capas de entrada y salida. Las redes completamente conectadas no tienen capas de entrada de nodos distintas y cada nodo tiene entradas de todos los demás nodos.</p>
+<p>En este tipo de redes neuronales es posible enviar retroalimentación al propio nodo.</p>
+<div id="fig-Recurrente1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Recurrente1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Recurrente1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="278">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Recurrente1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.6: Ejemplo de una capa de RNA recurrente totalmente conectada.
+</figcaption>
+</figure>
+</div>
+<p>En este caso se han utilizado redes neuronales simples parcialmente recurrentes (<a href="#fig-Recurrente2" class="quarto-xref">Figura&nbsp;<span>6.7</span></a>) para aprender cadenas de caracteres.</p>
+<div id="fig-Recurrente2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Recurrente2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Recurrente2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="293">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Recurrente2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.7: Ejemplo de una conexión entre capas de una RNA recurrente simple.
+</figcaption>
+</figure>
+</div>
+<p>En esta red algunos nodos son parte de una estructura de retroalimentación, otros nodos proporcionan el contexto secuencial y reciben retroalimentación de otros nodos.</p>
+<p>Los pesos (C1 y C2) se procesan como los de las unidades de entrada, por ejemplo, mediante retropropagación. Los nodos reciben retroalimentación retardada en el tiempo desde, en el caso de la (<a href="#fig-Recurrente2" class="quarto-xref">Figura&nbsp;<span>6.7</span></a>), las unidades de segunda capa.</p>
+<p>Los datos de entrenamiento constan de entradas y sus salidas sucesoras deseadas. La red puede entrenarse para predecir la siguiente letra en una cadena de caracteres y validar una cadena de caracteres.</p>
+</div>
+</section>
+<section id="red-neuronal-lstm" class="level3" data-number="6.8.3">
+<h3 data-number="6.8.3" class="anchored" data-anchor-id="red-neuronal-lstm"><span class="header-section-number">6.8.3</span> Red Neuronal LSTM</h3>
+<div style="text-align: justify">
+<p>La red neuronal con memoria a corto y largo plazo (LSTM, por su sigla en inglés) es una red neuronal recurrente con una memoria de estado y una estructura de red multicapa.</p>
+<p>Las redes de memoria a corto y largo plazo (LSTM), son un tipo especial de RNN, capaz de aprender dependencias a largo plazo. Fueron introducidos por <span class="citation" data-cites="schmidhuber1997long">Schmidhuber, Hochreiter, et&nbsp;al. (<a href="references.html#ref-schmidhuber1997long" role="doc-biblioref">1997</a>)</span> .</p>
+<p>Los LSTM están diseñados explícitamente para evitar el problema de dependencia a largo plazo. Recordar información durante largos períodos de tiempo es prácticamente su comportamiento predeterminado.</p>
+<p>El primer paso en para construir una arquitectura LSTM es decidir qué información será descartada del estado de la celda. Esta decisión la toma una capa sigmoidea llamada “capa de puerta de olvido” esto se puede ver en la <a href="#fig-celda" class="quarto-xref">Figura&nbsp;<span>6.8</span></a>.</p>
+<div id="fig-celda" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-celda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="LSTM.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-celda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.8: Celda de estado
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="red-neuronal-convolucional-cnn" class="level3" data-number="6.8.4">
+<h3 data-number="6.8.4" class="anchored" data-anchor-id="red-neuronal-convolucional-cnn"><span class="header-section-number">6.8.4</span> Red neuronal Convolucional (CNN)</h3>
+<div style="text-align: justify">
+<!-- La red neuronal convolucional o en ingles, Convolutional Neural Network (CNN), son un tipo de red neuronal que esta diseñado principalmente para procesar datos de imágenes. -->
+<p>Las redes convolucionales <span class="citation" data-cites="lecun1989generalization">(<a href="references.html#ref-lecun1989generalization" role="doc-biblioref">LeCun et&nbsp;al. 1989</a>)</span>, también conocidas como redes neuronales convolucionales o en ingles, Convolutional Neural Network (CNN), son un tipo de red neuronal que esta diseñado principalmente para procesar datos de imagenes. <!-- Mismas que tienen una topología conocida en forma de cuadrícula. Algunos ejemplos incluyen datos de series temporales, que pueden considerarse como una cuadrícula 1D que toma muestras a intervalos de tiempo regulares, y datos de imágenes, que pueden considerarse como una cuadrícula 2D de píxeles. --></p>
+<p>La red neuronal se basa en la comprensión de <span class="citation" data-cites="hubel1959receptive">Hubel y Wiesel (<a href="references.html#ref-hubel1959receptive" role="doc-biblioref">1959</a>)</span> sobre cómo funciona el procesamiento de imágenes en el cerebro de los gatos y bajo la hipótesis de que su campo visual parece estimular ciertas neuronas.</p>
+<p>Las redes neuronales convolucionales están diseñadas para funcionar con entradas estructuradas en cuadrícula, que tienen fuertes dependencias espaciales en regiones locales de la red. Un ejemplo común de datos generados por una cuadrícula es bidimensional. Este tipo de material exhibe dependencia espacial porque las áreas adyacentes de la imagen se parecen a los colores de los píxeles. Las dimensiones adicionales capturan diferentes colores, creando un volumen de entrada tridimensional. Por lo tanto, las redes neuronales convolucionales parecen depender de la distancia. Otras formas de datos secuenciales como texto, series de tiempo y secuencias también pueden considerarse casos especiales de estructuras estructuradas en cuadrícula. La mayoría de las aplicaciones de redes neuronales artificiales se centran en imágenes, aunque estas redes también se pueden utilizar sobre cualquier tipo de datos espaciales y temporales.</p>
+</div>
+<section id="capas-de-una-red-neuronal-convolucional-cnn" class="level4" data-number="6.8.4.1">
+<h4 data-number="6.8.4.1" class="anchored" data-anchor-id="capas-de-una-red-neuronal-convolucional-cnn"><span class="header-section-number">6.8.4.1</span> Capas de una red neuronal convolucional (CNN)</h4>
+<div style="text-align: justify">
+<!-- Se compone de múltiples bloques de construcción (conocidos como capas de la arquitectura), en esta subsección describimos algunos de estos bloques de construcción en detalle con su papel en la arquitectura de CNN como se ve en la @fig-entrenamiento_cnn. -->
+<p>La arquitectura de una red neuronal convolucional (CNN) se compone de múltiples bloques de construcción, conocidos como capas. A continuación se describen algunos de estos bloques y su papel en la arquitectura de la CNN como se muestra en la <a href="#fig-entrenamiento_cnn" class="quarto-xref">Figura&nbsp;<span>6.9</span></a>.</p>
+</div>
+<div id="fig-entrenamiento_cnn" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-entrenamiento_cnn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="convolucion1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-entrenamiento_cnn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.9: Esquema de Red Neuronal Convolucional
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="capa-convolucional" class="level4" data-number="6.8.4.2">
+<h4 data-number="6.8.4.2" class="anchored" data-anchor-id="capa-convolucional"><span class="header-section-number">6.8.4.2</span> Capa convolucional</h4>
+<div style="text-align: justify">
+<p>La capa convolucional es el componente más importante de cualquier arquitectura CNN. Contiene un conjunto de núcleos convolucionales (también llamados filtros), que convolucionan con la imagen de entrada (métricas N-dimensionales) para generar un mapa de características de salida.</p>
+</div>
+</section>
+<section id="sec-kernel" class="level4" data-number="6.8.4.3">
+<h4 data-number="6.8.4.3" class="anchored" data-anchor-id="sec-kernel"><span class="header-section-number">6.8.4.3</span> Kernel</h4>
+<div style="text-align: justify">
+<p>Un kernel, núcleo o filtro en la convolución de una CNN es una una matriz de <span class="math inline">\(n \times n\)</span> que contiene valores o números discretos, donde cada valor se conoce como el peso de este núcleo.</p>
+<p>Durante el inicio del proceso de entrenamiento de un modelo CNN, se asignan los pesos en el kernel de manera especifica o aleatoria dependiendo del enfoque. Luego, con cada época del entrenamiento, se ajustan los pesos y el núcleo aprende a extraer características significativas.</p>
+</div>
+</section>
+<section id="proceso-de-convolución" class="level4" data-number="6.8.4.4">
+<h4 data-number="6.8.4.4" class="anchored" data-anchor-id="proceso-de-convolución"><span class="header-section-number">6.8.4.4</span> Proceso de convolución</h4>
+<div style="text-align: justify">
+<p>Las capas de redes neuronales tradicionales utilizan la multiplicación de matrices por una matriz de parámetros con un parámetro separado que describe la interacción entre cada unidad de entrada y cada unidad de salida. Esto significa que cada unidad de salida interactúa con cada unidad de entrada. Sin embargo, las redes convolucionales suelen tener interacciones escasas (también denominadas conectividad dispersa o pesos dispersos). Esto se logra haciendo el kernel más pequeño que la entrada.</p>
+<p>Para comprender la operación de convolución en una imagen en escala de grises de <span class="math inline">\(n \times  n\)</span> de diámetro y un núcleo de <span class="math inline">\(m \times m\)</span> con pesos inicializados aleatoriamente se sigue el siguiente proceso:</p>
+<p><strong>Deslizamiento del núcleo.</strong></p>
+<p>Se toma el núcleo de <span class="math inline">\(m \times m\)</span> y se desliza sobre toda la imagen completa de <span class="math inline">\(n \times  n\)</span> tanto horizontal como verticalmente.</p>
+<p><strong>Producto escalar.</strong></p>
+<p>En cada posición, se calcula el producto escalar entre el núcleo y la imagen de entrada. Esto se realiza multiplicando los valores correspondientes del núcleo y la imagen, y luego sumando estos productos.</p>
+<p><strong>Generación del valor de salida.</strong></p>
+<p>La suma resultante de los productos se convierte en un valor de escala en el mapa de características de salida. Este proceso continúa hasta que el núcleo ya no puede deslizarse más sobre la imagen.</p>
+<p>Este procedimiento permite generar un mapa de características de la imagen original, facilitando así la extracción de características relevantes.</p>
+<p>La fórmula para encontrar el tamaño del mapa de características de salida después de la operación de convolución:</p>
+<p><span class="math display">\[  \displaystyle h^\prime = \lfloor  \dfrac{h-f+p}{s} +1 \rfloor ,\]</span></p>
+<p><span class="math display">\[  \displaystyle w^\prime = \lfloor  \dfrac{w-f+p}{s} + 1 \rfloor, \]</span></p>
+<p>Donde <span class="math inline">\(h^\prime\)</span> denota la altura del mapa de características de salida, <span class="math inline">\(w^\prime\)</span> denota el ancho del mapa de características de salida, <span class="math inline">\(h^\prime\)</span> denota la altura de la imagen de entrada, <span class="math inline">\(w\)</span> denota el ancho de la imagen de entrada, <span class="math inline">\(f\)</span> es el tamaño del filtro, <span class="math inline">\(p\)</span> denota el relleno de la operación de convolución y <span class="math inline">\(s\)</span> denota el paso de la operación de convolución. <span class="math display">\[ \lfloor \cdot \rfloor \]</span> denota la operación de piso (floor), que redondea el resultado hacia abajo al entero más cercano.</p>
+</div>
+</section>
+<section id="sec-pooling" class="level4" data-number="6.8.4.5">
+<h4 data-number="6.8.4.5" class="anchored" data-anchor-id="sec-pooling"><span class="header-section-number">6.8.4.5</span> Capas de Agrupación (Pooling layer)</h4>
+<div style="text-align: justify">
+<p>Las capas de agrupación (pooling layer) se utilizan para submuestrear los mapas de características (producidos después de operaciones de convolución), es decir, toma los mapas de características de mayor tamaño y los reduce a mapas de características de menor tamaño. Al reducir los mapas de características, siempre se conserva la características (o información) más dominantes en cada paso del grupo. La operación de agrupación se realiza especificando el tamaño de la región agrupada y el ritmo de la operación, similar a la operación de convolución.</p>
+<p>La fórmula para encontrar el tamaño del mapa de características de salida después de la operación de agrupación:</p>
+<p><span class="math display">\[ h^\prime = \lfloor \dfrac{h-f}{s} \rfloor \]</span> <span class="math display">\[w^´ = \lfloor \dfrac{w-f}{s} \rfloor ,\]</span></p>
+<p>Donde <span class="math inline">\(h^\prime\)</span> denota la altura del mapa de características de salida, <span class="math inline">\(w^\prime\)</span> denota el ancho de la mapa de características de salida, <span class="math inline">\(h\)</span> denota la altura del mapa de características de entrada, <span class="math inline">\(w\)</span> denota el ancho del mapa de características de entrada, <span class="math inline">\(f\)</span> es el tamaño de la región de agrupación y <span class="math inline">\(s\)</span> denota el paso de la operación de agrupación. <span class="math display">\[ \lfloor \cdot \rfloor ,\]</span> denota la operación de piso.</p>
+<p>Existen diversas técnicas de agrupación empleadas en diferentes capas de redes neuronales, entre las cuales se incluyen a agrupación máxima (Max pooling), la agrupación mínima, la agrupación promedio, las agrupaciones cerradas y las agrupaciones de árboles, entre otras. <strong>Max Pooling</strong> es la técnica de agrupación más popular y utilizada para CNN.</p>
+</div>
+<section id="máxima-agrupacion-max-pooling" class="level5" data-number="6.8.4.5.1">
+<h5 data-number="6.8.4.5.1" class="anchored" data-anchor-id="máxima-agrupacion-max-pooling"><span class="header-section-number">6.8.4.5.1</span> Máxima agrupacion (Max-Pooling)</h5>
+<div style="text-align: justify">
+<p>Esta operación consiste en aplicar una matriz de núcleo de tamaño <span class="math inline">\(m \times m\)</span> y quedarse con el valor máximo en ella, por lo que el resultado de esta aplicación pasaría a tener una única dimensión y podría ser la entrada de la capa de salida.</p>
+</div>
+<div id="fig-maxPooling" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-maxPooling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="max-pooling.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-maxPooling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.10: Operación maxpooling, donde el tamaño de la región de agrupación es <span class="math inline">\(2 \times 2\)</span> (que se muestra en color naranja, en el mapa de características de entrada) y la zancada es 1 y el correspondiente calculado valor en el mapa de características de salida (que se muestra en verde)
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-flatten" class="level5" data-number="6.8.4.5.2">
+<h5 data-number="6.8.4.5.2" class="anchored" data-anchor-id="sec-flatten"><span class="header-section-number">6.8.4.5.2</span> Aplanamiento en una red neuronal Convolucional (CNN)</h5>
+<div style="text-align: justify">
+<p>Las capas completamente conectadas, a diferencia de las capas convolucionales, no pueden procesar datos directamente con información espacial (alto, ancho). El aplanamiento, como se describe en el artículo <span class="citation" data-cites="he2016deep">(<a href="references.html#ref-he2016deep" role="doc-biblioref">He et&nbsp;al. 2016</a>)</span>, transforma los mapas de características (típicamente tensores 3D) en un vector 1D, permitiendo su integración en las capas completamente conectadas.</p>
+<p>El aplanamiento (o Flattering) en una red neuronal convolucional (CNN) se refiere al proceso de transformar la salida de capas convolucionales y de agrupación de un tensor multidimensional (que contiene información espacial) en un vector unidimensional con se ve en la <a href="#fig-flatten" class="quarto-xref">Figura&nbsp;<span>6.11</span></a>. Esto permite que la red aprenda las relaciones entre características extraídas de diferentes ubicaciones espaciales en la entrada.</p>
+<div id="fig-flatten" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flatten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Flattening.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flatten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.11: Aplananimeto después de una capa de Agrupación en CNN.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="entrenamiento-de-una-rna" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Entrenamiento de una RNA</h1>
+<div style="text-align: justify">
+<p>El entrenamiento de RNA requiere de una base de datos con representaciones de los fenómenos del problema en particular.</p>
+<p>En este esquema, la red compuesta por capas conectadas, mapea los datos de entrada a las predicciones obtenidas. Luego, la <a href="./redes.html#sec-función-de-perdida">función de pérdida</a> compara dichas predicciones con los objetivos de salida esperados, obteniendo así una medida del error. El algoritmo de optimización utiliza dicha medida para actualizar los pesos sinápticos de la red neuronal. Inicialmente a los pesos de la red se le asignan valores aleatorios, pero a partir de cada muestra de datos que la red procesa la función de pérdida se minimiza, luego la diferencia entre los valores de salida esperados y calculados se minimiza y los pesos sinápticos se ajustan.</p>
+<p>Antes de iniciar el proceso de aprendizaje es necesario particionar los datos. Éstos se dividen en dos conjuntos: un conjunto para <strong>entrenamiento</strong> y un conjunto para <strong>testeo</strong>. El conjunto de entrenamiento, que representa el <span class="math inline">\(\%70\)</span> u <span class="math inline">\(80 \%\)</span> del total de los datos históricos que serán utilizados para la etapa de entrenamiento en modelos de aprendizaje automático y el análisis estadístico. Luego, el conjunto para testeo que representa el <span class="math inline">\(20 \%\)</span> u <span class="math inline">\(30 \%\)</span> de los datos históricos y es utilizado para la evaluación de los modelos creados.</p>
+</div>
+</section>
+<section id="sec-sobreentrenamiento" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Sobreentrenamiento de una RNA</h1>
+<!-- ![Alt Text](backpropagation.gif){fig-align="center" width="581"} -->
+<div style="text-align: justify">
+<p>En la etapa del entrenamiento el conjunto de datos que se utilizó permite ajustar los parámetros del modelo (pesos de conexiones y bias), mientras que el subconjunto de test permite probar la RNA entrenada en patrones nuevos, no presentes en el conjunto de entrenamiento.</p>
+<p>Si el conjunto de datos durante entrenamiento fue elegida de manera correcta, esto se observa en el gráfico de la izquierda en la <a href="#fig-sobren" class="quarto-xref">Figura&nbsp;<span>8.1</span></a>, los errores van disminuyendo en cada época. En general no se puede asegurar que el conjunto de entrenamiento esté libre de ruido ni que se haya sido seleccionada con la máxima precisión deseada, por lo que al entrenar suele ocurrir el fenómeno de sobreentrenamiento o sobreajuste. Esto se puede ver claramente en el gráfico de la derecha de la <a href="#fig-sobren" class="quarto-xref">Figura&nbsp;<span>8.1</span></a>, ambos errores van disminuyendo hasta que llega un punto en el que el error de test empieza a aumentar. A partir de ese punto el sistema empieza a sobreajustarse.</p>
+<div id="fig-sobren" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sobren-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sobrenetrenamiento.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sobren-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;8.1: Gráfico de errres en el proceso de entrenamiento de una RNA
+</figcaption>
+</figure>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-apicella2021survey" class="csl-entry" role="listitem">
+Apicella, Andrea, Francesco Donnarumma, Francesco Isgrò, y Roberto Prevete. 2021. <span>«A survey on modern trainable activation functions»</span>. <em>Neural Networks</em> 138: 14-32.
+</div>
+<div id="ref-da1996fundamentals" class="csl-entry" role="listitem">
+Fontoura Costa, Luciano da, y Gonzalo Travieso. 1996. <span>«Fundamentals of neural networks: By Laurene Fausett. Prentice-Hall, 1994, pp. 461, ISBN 0-13-334186-0»</span>. Elsevier.
+</div>
+<div id="ref-he2016deep" class="csl-entry" role="listitem">
+He, Kaiming, Xiangyu Zhang, Shaoqing Ren, y Jian Sun. 2016. <span>«Deep residual learning for image recognition»</span>. En <em>Proceedings of the IEEE conference on computer vision and pattern recognition</em>, 770-78.
+</div>
+<div id="ref-hecht1990neurocomputing" class="csl-entry" role="listitem">
+Hecht-Nielsen, Robert. 1990. <span>«Neurocomputing, Addison»</span>. <em>Wesely Publishing Company. Hornik, K. Stinchcombe, M. White, H.(1989). Multilayer feedforward networks are universal approximators, Neural Networks</em> 2 (359366): 3168-76.
+</div>
+<div id="ref-hubel1959receptive" class="csl-entry" role="listitem">
+Hubel, David H, y Torsten N Wiesel. 1959. <span>«Receptive fields of single neurones in the cat’s striate cortex»</span>. <em>The Journal of physiology</em> 148 (3): 574.
+</div>
+<div id="ref-kingma2014adam" class="csl-entry" role="listitem">
+Kingma, Diederik P, y Jimmy Ba. 2014. <span>«Adam: A method for stochastic optimization»</span>. <em>arXiv preprint arXiv:1412.6980</em>.
+</div>
+<div id="ref-lecun1989generalization" class="csl-entry" role="listitem">
+LeCun, Yann et&nbsp;al. 1989. <span>«Generalization and network design strategies»</span>. <em>Connectionism in perspective</em> 19 (143-155): 18.
+</div>
+<div id="ref-mcculloch1943logical" class="csl-entry" role="listitem">
+McCulloch, Warren S, y Walter Pitts. 1943. <span>«A logical calculus of the ideas immanent in nervous activity»</span>. <em>The bulletin of mathematical biophysics</em> 5: 115-33.
+</div>
+<div id="ref-rosenblatt1958perceptron" class="csl-entry" role="listitem">
+Rosenblatt, Frank. 1958. <span>«The perceptron: a probabilistic model for information storage and organization in the brain.»</span> <em>Psychological review</em> 65 (6): 386.
+</div>
+<div id="ref-rumelhart1986learning" class="csl-entry" role="listitem">
+Rumelhart, David E, Geoffrey E Hinton, y Ronald J Williams. 1986. <span>«Learning representations by back-propagating errors»</span>. <em>nature</em> 323 (6088): 533-36.
+</div>
+<div id="ref-schmidhuber1997long" class="csl-entry" role="listitem">
+Schmidhuber, Jürgen, Sepp Hochreiter, et&nbsp;al. 1997. <span>«Long short-term memory»</span>. <em>Neural Comput</em> 9 (8): 1735-80.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = true;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./herramientas.html" class="pagination-link" aria-label="Herramientas de inteligencia artificial">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Herramientas de inteligencia artificial</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./metodologia.html" class="pagination-link" aria-label="Metodología.">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metodología.</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

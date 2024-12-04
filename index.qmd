@@ -1,0 +1,9 @@
+---
+lang: es
+---
+
+# Resumen
+
+::: {style="text-align: justify"}
+Esta tesis presenta un análisis comparativo de dos tipos de modelos de redes neuronales utilizados para el pronóstico de series temporales: las redes neuronales de memoria de corto y largo plazo (LSTM) y las redes neuronales convolucionales (CNN). El estudio adopta un enfoque integral que comienza con una revisión exhaustiva de los datos, abarcando desde la limpieza y preparación de los mismos hasta la aplicación de la teoría del análisis de series temporales. Además, se exploran en profundidad los fundamentos de las redes neuronales, proporcionando una base teórica sólida que permite entender las metodologías empleadas en el estudio. A través de esta comparación, se busca identificar las fortalezas y debilidades de cada modelo en el contexto del pronóstico de series temporales.
+:::
