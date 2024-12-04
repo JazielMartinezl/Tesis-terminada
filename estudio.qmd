@@ -1335,7 +1335,7 @@ Luego de obtener los valores pronosticados por las redes propuestas, se tomó la
 :::
 
 |  |  |  |  |  |
-|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
+|:--:|:--:|:--:|:--:|:--:|
 |  |  | **RMSE** |  |  |
 | **Datos históricos** | **180 días** | **90 días** | **30 días** | **15 días** |
 | **Numero de días pronosticados** | 7 días | 4 días | 4 días | 2 días |
